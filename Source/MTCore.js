@@ -9,7 +9,7 @@ requires:
   - Core
   - Element.Event
 license: MIT-style
-description: ""
+description: The core of MooTouch.
 ...
 */
 

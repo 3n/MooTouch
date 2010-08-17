@@ -10,7 +10,7 @@ requires:
   self/: 
   - MTPoint
 license: MIT-style
-description: ""
+description: Element extensions for getting and setting the translate3d css property.
 ...
 */
 

@@ -14,7 +14,7 @@ requires:
   - Element.Dimensions
   - Number
 license: MIT-style
-description: ""
+description: A recreation of the native iOS scrolling.
 ...
 */
 

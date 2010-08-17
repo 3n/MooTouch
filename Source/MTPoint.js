@@ -8,7 +8,7 @@ requires:
   self/: 
   - MTCore
 license: MIT-style
-description: ""
+description: A simple 3d point class with some helper methods.
 ...
 */
 
