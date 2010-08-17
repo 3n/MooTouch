@@ -5,6 +5,8 @@ authors:
 provides: 
 - MTScrollView
 requires: 
+  more/1.2.3.1: 
+  - Class.Binds
   self/: 
   - MTPoint
   - MTTranslate
@@ -114,7 +116,8 @@ var MTScrollView = new Class({
     if (this.options.pagingEnabled && !this.customPageSize)
       this.options.pageSize = this.scrollArea.getSize();
 
-    return this.contentSize = { 'x': this.hostingLayerSize.x - this.scrollAreaSize.x, 'y': this.hostingLayerSize.y - this.scrollAreaSize.y };
+    return this.contentSize = { 'x': (this.hostingLayerSize.x - this.scrollAreaSize.x).abs(), 
+                                'y': (this.hostingLayerSize.y - this.scrollAreaSize.y).abs() };
   },
   
   // Event Callbacks
