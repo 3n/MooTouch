@@ -1,0 +1,18 @@
+--- 
+author: 3n
+website: http://www.iancollins.me
+contact: ian.collins@gmail.com
+scripts: 
+- MTCore
+- MTSwipeEvent
+- MTTapEvent
+- MTPoint
+- MTTranslate
+- MTScrollView
+tags: 
+- mobile
+- ios
+- iphone
+- ipad
+current: 0.1
+name: MTScrollView
