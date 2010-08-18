@@ -5,11 +5,17 @@ A small "framework" to help in building applications with MooTools for touch-
 capable devices. 
 
 Currently provides a few helper events for common gestures, some Element
-extensions for getting and setting the translate3d property and a top-
-of-the-line, best-of-breed native iOS scrolling class.
+extensions for getting and setting the translate3d property and a 
+native iOS scrolling emulation class.
 
 All code works on old-school "desktop" browsers as well, as "mouse" events
 are handled the same as touch events.
+
+Authors
+-------
+
+Ian Collins & Toby Sterrett,
+Grade 3
 
 To Do
 -----
