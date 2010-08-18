@@ -11,6 +11,13 @@ of-the-line, best-of-breed native iOS scrolling class.
 All code works on old-school "desktop" browsers as well, as "mouse" events
 are handled the same as touch events.
 
+To Do
+-----
+
+* Add compatibility for non iOS devices (e.g. Android)
+* Add compatibility for non webkit browsers (e.g. Firefox?)
+* Add UI/Control classes such as button and toggle.
+
 MooTouch Core
 =============
 
