@@ -376,7 +376,7 @@ var MTScrollView = new Class({
     
     this.options.axis.each(function(axis){
       if (this.indicators[axis] && this.options['showScrollIndicator' + axis.toUpperCase()]){
-        var dim = this.scrollAreaSize[axis] * (this.scrollAreaSize[axis] / this.hostingLayerSize[axis]);
+        var dim = this.scrollAreaSize[axis] * (this.scrollAreaSize[axis] / this.hostingLayerSize[axis]).limit(0,1);
         var pos = (this.scrollAreaSize[axis] - dim) * (this.currentScroll[axis] / this.contentSize[axis]);
         var scale = 1,
             scaleDiff = 0;
