@@ -116,8 +116,8 @@ var MTScrollView = new Class({
     if (this.options.pagingEnabled && !this.customPageSize)
       this.options.pageSize = this.scrollArea.getSize();
 
-    return this.contentSize = { 'x': (this.hostingLayerSize.x - this.scrollAreaSize.x).abs(), 
-                                'y': (this.hostingLayerSize.y - this.scrollAreaSize.y).abs() };
+    return this.contentSize = { 'x': (this.hostingLayerSize.x - this.scrollAreaSize.x).limit(0,this.hostingLayerSize.x), 
+                                'y': (this.hostingLayerSize.y - this.scrollAreaSize.y).limit(0,this.hostingLayerSize.y) };
   },
   
   // Event Callbacks
