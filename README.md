@@ -11,6 +11,8 @@ native iOS scrolling emulation class.
 All code works on old-school "desktop" browsers as well, as "mouse" events
 are handled the same as touch events.
 
+A demo can be found here: http://iancollins.me/MooTouch-Demo/
+
 Authors
 -------
 
