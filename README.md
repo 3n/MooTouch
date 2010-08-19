@@ -215,6 +215,7 @@ Options
 * indicatorShowingClass - Class name for indicators while showing Defaults to 'showing'.
 * frameRate - Obvious. Defaults to (1000 / 60).    
 * minimumTrackingForDrag - How many pixels in drag before it counts as a scroll. Defaults to 15.
+* indicatorHeightEffect - Height effect when dragging out of bounds. A bit buggy still. Defaults to false.
 * scrollAcceleration - Obvious. Defaults to 15.
 * snapDeceleration - The acceleration of the snap-to-bounds animation. Defaults to 0.05.
 * snapAcceleration - The deceleration of the snap-to-bounds animation. Defaults to 0.13.

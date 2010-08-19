@@ -66,7 +66,7 @@ var MTScrollView = new Class({
     this.scrollArea = document.id(scrollArea);
     
     this.hostingLayer = new Element('div').inject(this.scrollArea, 'top');
-    this.hostingLayer.adopt(this.hostingLayer.getAllNext())
+    this.hostingLayer.adopt(this.hostingLayer.getAllNext());
     
     this.options.axis.each(function(axis){
       this.indicators[axis] = new Element('div', {
@@ -149,7 +149,7 @@ var MTScrollView = new Class({
     var deltaPoint = touch_position.minus(this.startTouchPosition);
 
     if (!this.isDragging) {      
-      if (this.options.axis.some(function(axis){ return deltaPoint[axis].abs() >= this.options.minimumTrackingForDrag }.bind(this))){
+      if (this.options.axis.some(function(axis){ return deltaPoint[axis].abs() >= this.options.minimumTrackingForDrag; }.bind(this))){
         this.fireEvent('willBeginDragging', this);
         this.isDragging = true;
         this.firstDrag = true;
@@ -404,8 +404,9 @@ var MTScrollView = new Class({
         else
           this.indicators[axis].setStyle('-webkit-transition-duration', 0);
 
-        this.indicators[axis].setStyle('webkitTransform', 'scale' + axis.toUpperCase() + '(' + scale + ')');        
-        this.indicators[axis]['setTranslate' + axis.toUpperCase()](pos + scaleDiff);
+        if (this.options.indicatorHeightEffect)
+          this.indicators[axis].setStyle('webkitTransform', 'scale' + axis.toUpperCase() + '(' + scale + ')');        
+        this.indicators[axis]['setTranslate' + axis.toUpperCase()](pos + (this.options.indicatorHeightEffect ? scaleDiff : 0));
       }
     }, this);
   },
