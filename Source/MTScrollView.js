@@ -49,7 +49,8 @@ var MTScrollView = new Class({
     pagingTransitionDuration : '0.25s',    
     decelerationFrictionFactor : 0.950,
     boundsFrictionFactor : 0.6,
-    maxAgeForPointHistory : 100
+    maxAgeForPointHistory : 100,
+    bottomCancelHeight : 20
   },
   
   currentScroll : new MTPoint(),
@@ -57,6 +58,7 @@ var MTScrollView = new Class({
   isDecelerating : false,
   scrollEnabled : true,
   indicators : $H(),
+  touchesBeganFired : false,
   
   initialize: function(scrollArea, options){
     this.setOptions(options);
@@ -112,6 +114,7 @@ var MTScrollView = new Class({
   refreshSizes: function(){    
     this.hostingLayerSize = this.hostingLayer.getSize();
     this.scrollAreaSize = this.scrollArea.getSize();
+    this.windowHeight = window.getHeight();
       
     if (this.options.pagingEnabled && !this.customPageSize)
       this.options.pageSize = this.scrollArea.getSize();
@@ -126,6 +129,7 @@ var MTScrollView = new Class({
     this.fireEvent('scrollEnd', this);
   },
   touchesBegan: function(event){
+    this.touchesBeganFired = true;
     if (!this.scrollEnabled) return;
     
     event.preventDefault();
@@ -137,12 +141,15 @@ var MTScrollView = new Class({
 
     this.startScrollPosition = this.currentScroll.copy();
     this.startTouchPosition = MTPoint.fromEventInElement(event, this.scrollArea);
-
+    
     this.isDragging = false;
 
     this.attachTrackingEvents();
   },
   touchesMoved: function(event){
+    if (!this.touchesBeganFired)
+      return this.touchesBegan(event);
+    
     event.preventDefault();
     
     var touch_position = MTPoint.fromEventInElement(event, this.scrollArea);
@@ -161,6 +168,12 @@ var MTScrollView = new Class({
         this.startTouchPosition = touch_position;
         return;
       }      
+      
+      if (this.windowHeight - this.options.bottomCancelHeight < MT.getEvent(event).pageY){
+        this.touchesEnded(event, true);
+        return;
+      }        
+      
       var newPoint = this.startScrollPosition.copy(function(val, axis){
         return (this.options.axis.contains(axis)) ? val - deltaPoint[axis] : this.currentScroll[axis];
       }.bind(this));
@@ -179,8 +192,9 @@ var MTScrollView = new Class({
     
     this.addPointToHistory(event.timeStamp, this.currentScroll.copy());
   },
-  touchesEnded: function(event){
-    this.detachTrackingEvents();
+  touchesEnded: function(event, dontDetach){    
+    if (!$defined(dontDetach))
+      this.detachTrackingEvents();
     
     if (this.isDragging) {
       this.isDragging = false;
@@ -199,9 +213,10 @@ var MTScrollView = new Class({
       this.snapToBounds(true);
       this.hideIndicators();
     }
+    this.touchesBeganFired = false;
   },
-  touchesCancelled: function(e){
-    this.touchesEnded();
+  touchesCancelled: function(event){
+    this.touchesEnded(event);    
   },
   
   
