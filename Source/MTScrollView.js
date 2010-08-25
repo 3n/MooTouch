@@ -137,7 +137,7 @@ var MTScrollView = new Class({
     this.hostingLayer.setStyle('-webkit-transition-duration', 0);
     this.snapToBounds(false);
 
-    this.addPointToHistory(event.timeStamp, this.currentScroll);
+    this.addPointToHistory(event.timeStamp, this.currentScroll, true);
 
     this.startScrollPosition = this.currentScroll.copy();
     this.startTouchPosition = MTPoint.fromEventInElement(event, this.scrollArea);
@@ -448,14 +448,14 @@ var MTScrollView = new Class({
   
   
   // Speed Tracking
-  addPointToHistory: function(time, point){
+  addPointToHistory: function(time, point, fast){
     this.latestPoint = point;
     this.latestTime = time;
     
     this.pointTimer = (function(){
       this.oldestPoint = point;
       this.oldestTime = time;
-    }).delay(this.options.maxAgeForPointHistory, this);
+    }).delay(fast ? 0 : this.options.maxAgeForPointHistory, this);
   },
   finalDuration: function(){
     return (this.oldestTime - this.latestTime) / this.options.scrollAcceleration;
