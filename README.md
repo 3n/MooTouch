@@ -1,8 +1,14 @@
 MooTouch
 ========
 
-A small "framework" to help in building applications with MooTools for touch-
-capable devices. 
+__A small "framework" to help in building applications with MooTools for touch-
+capable devices.__
+
+_The goal of this project is __not__ to provide an app-in-a-box framework that 
+defines the layout, interactions and style. The goal is to provide touch and 
+device-specific events and useful UI components/views for use in an application
+you design yourself. It is meant to be used by people who know how to write code
+and build their own apps._
 
 Currently provides a few helper events for common gestures, some Element
 extensions for getting and setting the translate3d property and a 
@@ -11,7 +17,7 @@ native iOS scrolling emulation class.
 All code works on old-school "desktop" browsers as well, as "mouse" events
 are handled the same as touch events.
 
-A demo can be found here: http://iancollins.me/MooTouch-Demo/
+A demo can be found here: [http://iancollins.me/MooTouch-Demo/](http://iancollins.me/MooTouch-Demo/)
 
 Authors
 -------
@@ -24,8 +30,9 @@ To Do
 
 * Add compatibility for non iOS devices (e.g. Android)
 * Add compatibility for non webkit browsers (e.g. Firefox?)
-* Add UI/Control classes such as button and toggle.
+* Add UI/Control classes such as button, toggle, slider and popover.
 
+- - -
 MooTouch Core
 =============
 
@@ -43,6 +50,7 @@ What it does
 * A MT.getEvent method is created for hiding the difference between
   touches and clicks from the rest of MooTouch.
 
+- - -
 MTSwipeEvent
 ============
 
@@ -77,6 +85,7 @@ You can configure the following properties by assigning a value to them in your 
 	Element.Events.swipe.cancelVertical // default is true
 
 
+- - -
 MTTapEvent
 ==========
 
@@ -93,6 +102,7 @@ Add and remove the event as you would normally. The event will only fire under t
 2. During the touch start/end sequence, the page does not scroll.
 
 
+- - -
 MooTouch Translate
 ==================
 
@@ -123,6 +133,7 @@ for the other axis, instead of leaving null (which will maintain current
 value).
 
 
+- - -
 MooTouch ScrollView
 ===================
 
