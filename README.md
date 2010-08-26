@@ -32,7 +32,6 @@ To Do
 * Add compatibility for non webkit browsers (e.g. Firefox?)
 * Add UI/Control classes such as button, toggle, slider and popover.
 
-- - -
 MooTouch Core
 =============
 
@@ -50,7 +49,6 @@ What it does
 * A MT.getEvent method is created for hiding the difference between
   touches and clicks from the rest of MooTouch.
 
-- - -
 MTSwipeEvent
 ============
 
@@ -85,7 +83,6 @@ You can configure the following properties by assigning a value to them in your 
 	Element.Events.swipe.cancelVertical // default is true
 
 
-- - -
 MTTapEvent
 ==========
 
@@ -102,7 +99,6 @@ Add and remove the event as you would normally. The event will only fire under t
 2. During the touch start/end sequence, the page does not scroll.
 
 
-- - -
 MooTouch Translate
 ==================
 
@@ -133,7 +129,6 @@ for the other axis, instead of leaving null (which will maintain current
 value).
 
 
-- - -
 MooTouch ScrollView
 ===================
 
