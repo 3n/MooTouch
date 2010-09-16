@@ -58,7 +58,7 @@ Element.Events.swipe = {
           && Math.abs(startY - endY) < Math.abs(startX - endX)){
         return false;
       }
-    }
+    };
 
     this.addEvent(MT.startEvent, touchStart);    
     this.addEvent(MT.moveEvent, touchMove);

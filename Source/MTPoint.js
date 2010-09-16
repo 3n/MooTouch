@@ -50,10 +50,10 @@ MTPoint.prototype.copy = function(fn){
     return new MTPoint(fn(this.x, 'x'), fn(this.y, 'y'));
   else
     return new MTPoint(this.x, this.y);
-}
+};
 
 MTPoint.fromEventInElement = function (event, element) {
-  var event = MT.getEvent(event),
-      wkPoint = window.webkitConvertPointFromPageToNode(element, new WebKitPoint(event.pageX, event.pageY));
+  event = MT.getEvent(event);
+  var wkPoint = window.webkitConvertPointFromPageToNode(element, new WebKitPoint(event.pageX, event.pageY));
   return new MTPoint(wkPoint.x, wkPoint.y);
 };

@@ -26,7 +26,7 @@ Element.NativeEvents.orientationchange   = 2;
 // MooTouch master object
 var MT = {
   supportsTouches : 'createTouch' in document
-}
+};
 MT.startEvent = MT.supportsTouches ? 'touchstart' : 'mousedown';
 MT.moveEvent  = MT.supportsTouches ? 'touchmove'  : 'mousemove';
 MT.endEvent   = MT.supportsTouches ? 'touchend'   : 'mouseup';

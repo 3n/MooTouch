@@ -27,14 +27,14 @@ Element.implement({
   setTranslate3d: function(x,y,z){  
     var oldPoint = this.getTranslate3d() || new MTPoint(0,0,0);
 
-    var x = $chk(x) ? x : oldPoint.x,
-        y = $chk(y) ? y : oldPoint.y,
-        z = $chk(z) ? z : oldPoint.z;
+    x = $chk(x) ? x : oldPoint.x;
+    y = $chk(y) ? y : oldPoint.y;
+    z = $chk(z) ? z : oldPoint.z;
     
     var newPoint = new MTPoint(x,y,z);
 
     if (newPoint.equals(oldPoint))
-      return;
+      return this;
     
     var previousTransform = (this.getStyle('webkitTransform') || '').replace(/translate3d\([^)]+\)/,'');    
     this.setStyle('webkitTransform', previousTransform + " translate3d(" + x + "px," + y + "px," + z + "px)");

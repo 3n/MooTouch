@@ -9,7 +9,7 @@ authors: Ian Collins (@3n)
 
 license: MIT-style license.
 
-requires: [Core/Class.Extras, Core/Element.Event, Core/Element.Dimensions, Core/Number, MTPoint, MTTranslate]
+requires: [Core/Class.Extras, Core/Element.Event, Core/El<ement.Dimensions, Core/Number, MTPoint, MTTranslate]
 
 provides: MTScrollView
 
@@ -143,8 +143,10 @@ var MTScrollView = new Class({
     this.attachTrackingEvents();
   },
   touchesMoved: function(event){
-    if (!this.touchesBeganFired)
-      return this.touchesBegan(event);
+    if (!this.touchesBeganFired){
+      this.touchesBegan(event);
+      return;
+    }
     
     event.preventDefault();
     
@@ -438,7 +440,7 @@ var MTScrollView = new Class({
     return this.scrollToPoint(new MTPoint(), true);
   },
   scrollTo: function(x,y,animate){
-    var animate = $defined(animate) ? animate : true;
+    animate = $defined(animate) ? animate : true;
     return this.scrollToPoint(new MTPoint(x,y), animate);
   },
   

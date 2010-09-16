@@ -55,7 +55,7 @@ Element.Events.tap = {
         fn.call(this, event);
     };
     var scrollFn = function(event){
-      var event = MT.getEvent(event.event);
+      event = MT.getEvent(event.event);
       var pageX = event.pageX,
           pageY = event.pageY,
           left  = this.getLeft(),
