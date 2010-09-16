@@ -1,16 +1,18 @@
 /*
---- 
-authors: 
-- 3n
-provides: 
-- MTTranslate
-requires: 
-  core/1.2.3: 
-  - Element.Style
-  self/: 
-  - MTPoint
-license: MIT-style
+---
+
+name: MTTranslate
+
 description: Element extensions for getting and setting the translate3d css property.
+
+authors: Ian Collins (@3n)
+
+license: MIT-style license.
+
+requires: [MTPoint]
+
+provides: MTTranslate
+
 ...
 */
 

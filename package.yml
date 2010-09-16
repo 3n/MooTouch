@@ -1,19 +1,22 @@
---- 
-author: 3n
-website: http://www.iancollins.me
-contact: ian.collins@gmail.com
-scripts: 
-- MTCore
-- MTSwipeEvent
-- MTTapEvent
-- MTPoint
-- MTTranslate
-- MTScrollView
-tags: 
-- mobile
-- ios
-- iphone
-- ipad
-current: 0.1
-demo: http://iancollins.me/MooTouch-Demo/
-name: MooTouch
+name: "MooTouch"
+
+exports: "mootouch.js"
+
+web: "[iancollins.me](http://www.iancollins.me)"
+
+description: "A small framework for doing cool things with MooTools on touch-enabled devices."
+
+license: "[MIT License](http://mootools.net/license.txt)"
+
+copyright: "&copy; [Ian Collins](ian.collins@gmail.com)"
+
+author: "3n"
+authors: "[Ian Collins](http://www.iancollins.me) [Christoph Pojer](http://cpojer.net)"
+
+sources:
+    - "Source/MTCore.js"
+    - "Source/MTSwipeEvent.js"
+    - "Source/MTTapEvent.js"
+    - "Source/MTPoint.js"
+    - "Source/MTTranslate.js"
+    - "Source/MTScrollView.js"

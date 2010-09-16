@@ -1,17 +1,18 @@
 /*
---- 
-authors: 
-- 3n
-provides: 
-- MTTapEvent
-requires: 
-  self/: 
-  - MTCore
-  core/1.2.3: 
-  - Element.Event
-  - Element.Dimensions
-license: MIT-style
-description: Adds element.addEvent('tap', fn).
+---
+
+name: MTTapEvent
+
+description: Adds a custom tap event
+
+authors: Ian Collins (@3n)
+
+license: MIT-style license.
+
+requires: [MTCore, Core/Element.Event, Core/Element.Dimensions]
+
+provides: MTTapEvent
+
 ...
 */
 

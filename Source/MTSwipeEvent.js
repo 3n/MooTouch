@@ -1,16 +1,18 @@
 /*
---- 
-authors: 
-- 3n
-provides: 
-- MTSwipeEvent
-requires: 
-  self/: 
-  - MTCore
-  core/1.2.3: 
-  - Element.Event
-license: MIT-style
-description: Adds element.addEvent('swipe', fn). fn is passed information about the swipe location and direction.
+---
+
+name: MTSwipeEvent
+
+description: Adds a custom swipe event
+
+authors: Ian Collins (@3n)
+
+license: MIT-style license.
+
+requires: [MTCore, Core/Element.Event]
+
+provides: MTSwipeEvent
+
 ...
 */
 

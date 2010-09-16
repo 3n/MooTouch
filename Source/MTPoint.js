@@ -1,14 +1,18 @@
 /*
---- 
-authors: 
-- 3n
-provides: 
-- MTPoint
-requires: 
-  self/: 
-  - MTCore
-license: MIT-style
+---
+
+name: MTPoint
+
 description: A simple 3d point class with some helper methods.
+
+authors: Ian Collins (@3n)
+
+license: MIT-style license.
+
+requires: [MTCore]
+
+provides: MTPoint
+
 ...
 */
 

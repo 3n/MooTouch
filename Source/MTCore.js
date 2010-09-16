@@ -1,15 +1,18 @@
 /*
---- 
-authors: 
-- 3n
-provides: 
-- MTCore
-requires: 
-  core/1.2.3: 
-  - Core
-  - Element.Event
-license: MIT-style
+---
+
+name: MTCore
+
 description: The core of MooTouch.
+
+authors: Ian Collins (@3n)
+
+license: MIT-style license.
+
+requires: [Core/Element.Event]
+
+provides: MTCore
+
 ...
 */
 
