@@ -17,9 +17,8 @@ provides: MTScrollView
 */
 
 var MTScrollView = new Class({
-  Implements: [Options, Events],
-  Binds: ['touchesBegan', 'touchesMoved', 'touchesEnded', 'transitionEnded',
-          'touchesCancelled', 'decelerationFrame'],
+
+  Implements: [Options, Events, Class.Binds],
 
   options : {
     axis : ['y'],
@@ -86,23 +85,23 @@ var MTScrollView = new Class({
 
   // Event attaching and handling
   attach: function(){
-    $$([this.scrollArea, this.hostingLayer]).addEvent('webkitTransitionEnd', this.transitionEnded);
-    this.scrollArea.addEventListener(MT.startEvent, this.touchesBegan, true);
+    $$([this.scrollArea, this.hostingLayer]).addEvent('webkitTransitionEnd', this.bound('transitionEnded'));
+    this.scrollArea.addEventListener(MT.startEvent, this.bound('touchesBegan'), true);
   },
   detach: function(){
     this.detachTrackingEvents();
-    $$([this.scrollArea, this.hostingLayer]).removeEvent('webkitTransitionEnd', this.transitionEnded);
-    this.scrollArea.removeEventListener(MT.startEvent, this.touchesBegan, true);
+    $$([this.scrollArea, this.hostingLayer]).removeEvent('webkitTransitionEnd', this.bound('transitionEnded'));
+    this.scrollArea.removeEventListener(MT.startEvent, this.bound('touchesBegan'), true);
   },
   attachTrackingEvents: function(){
-    this.options.eventElement.addEventListener(MT.moveEvent, this.touchesMoved, true);
-    this.options.eventElement.addEventListener(MT.endEvent,  this.touchesEnded, true);
-    this.options.eventElement.addEventListener('touchcancel', this.touchesCancelled, true);
+    this.options.eventElement.addEventListener(MT.moveEvent, this.bound('touchesMoved'), true);
+    this.options.eventElement.addEventListener(MT.endEvent,  this.bound('touchesEnded'), true);
+    this.options.eventElement.addEventListener('touchcancel', this.bound('touchesCancelled'), true);
   },
   detachTrackingEvents: function(){
-    this.options.eventElement.removeEventListener(MT.moveEvent, this.touchesMoved, true);
-    this.options.eventElement.removeEventListener(MT.endEvent, this.touchesEnded, true);
-    this.options.eventElement.removeEventListener('touchcancel', this.touchesCancelled, true);
+    this.options.eventElement.removeEventListener(MT.moveEvent, this.bound('touchesMoved'), true);
+    this.options.eventElement.removeEventListener(MT.endEvent, this.bound('touchesEnded'), true);
+    this.options.eventElement.removeEventListener('touchcancel', this.bound('touchesCancelled'), true);
   },
 
 
@@ -283,7 +282,7 @@ var MTScrollView = new Class({
     var min_velocity = this.options.pagingEnabled ? this.options.minVelocityForDecelerationWhenPaging : this.options.minVelocityForDeceleration;
     if (this.decelerationVelocity.x.abs() > min_velocity || this.decelerationVelocity.y.abs() > min_velocity) {
       this.isDecelerating = true;
-      this.decelerationTimer = this.decelerationFrame.delay(this.options.frameRate);
+      this.decelerationTimer = this.decelerationFrame.delay(this.options.frameRate, this);
       this.lastFrame = new Date();
       this.fireEvent('willBeginDecelerating');
     }
@@ -342,7 +341,7 @@ var MTScrollView = new Class({
     }
 
     if (!fast)
-      this.decelerationTimer = this.decelerationFrame.delay(this.options.frameRate);
+      this.decelerationTimer = this.decelerationFrame.delay(this.options.frameRate, this);
 
     if (this.options.bounces) {
       var penetration_factor = new MTPoint();
