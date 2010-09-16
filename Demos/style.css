@@ -1,0 +1,166 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+
+ol, ul {
+	list-style: none;
+}
+
+
+
+body {
+  font-family:Helvetica;
+  color:#333;
+	background-color: #dfe2e7;
+}
+
+h1 {
+  margin:10px 15px;
+  font-size:150%;
+/*  color:#6B6F75;*/
+  color:#E6FFE0;
+  font-weight:bold;
+  text-shadow:0 1px 1px rgba(0,0,0,0.5);
+/*text-shadow:0 -1px rgba(0,0,0,0.7), 0 1px white;*/
+color:white;
+}
+
+p {
+  padding:12px 15px 0 15px;
+  line-height:1.3em;
+  font-size:90%;
+  text-shadow:0 1px white;
+}
+
+
+#container {
+  padding:0 12px;
+}
+
+.scrollview {
+  width:100%;
+  max-width:500px;
+	position:relative;
+  overflow: hidden;
+  -webkit-border-radius: 8px;
+  border:1px solid rgba(0,0,0,0.13);
+  -webkit-box-shadow:0 1px 1px white;
+  background:rgba(0,0,0,0.02);
+  background:rgba(255,255,255,0.3);  
+}
+
+.scrollview .section {
+	background: -webkit-gradient(linear, 0% 0%, 0% 1%, from(rgba(0,0,0,0.08)), to(transparent));
+	background-color: #f7f7f7;
+	-webkit-border-radius: 8px;
+	border: 1px solid #b6b9bd;
+	-webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.8);  
+	margin:24px 12px 0 12px;
+}
+
+.scrollview .section li {
+  -webkit-background-clip: padding-box;  
+	border-bottom: 1px solid #cacaca;
+	padding: 12px 8px;
+	border-top: 1px solid #fff;
+	font-weight: bold;
+	position: relative;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	-webkit-transition: padding 0.1s ease-in-out;
+}
+
+.scrollview .section li:last-child {
+	border-bottom-style: none;
+	-webkit-border-bottom-left-radius: 8px;
+	-webkit-border-bottom-right-radius: 8px;	
+}
+
+.scrollview .section li:first-child {
+	border-top-style: none;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;	
+}
+
+
+.indicator {
+  background:rgba(0,0,0,0.4); 
+  -webkit-border-radius:5px;
+  position:absolute;
+  opacity:0;
+}
+  .indicator.showing {
+    opacity:1;
+  }
+.y-axis-indicator {
+  width:5px;
+  min-height:10px;
+  top:0px;
+  right:5px;
+  margin:5px 0;
+}
+.x-axis-indicator {
+  bottom:5px;
+  margin:0 5px;
+  height:5px;
+}
+
+
+.section li.tapEventActive {
+  background:#eee;
+}
+
+.section li span {
+  float:right;
+  color:#aaa;
+  font-weight:lighter;
+  -webkit-transition: -webkit-transform 0.1s;  
+}
+
+.section li span.pop {
+  -webkit-transform: scale(1.5);
+}
+
+
+#horizontal-scroll {
+  position:relative;
+  overflow:hidden; 
+  -webkit-border-radius:0;
+  border:none;
+  -webkit-box-shadow:none;
+}
+
+#horizontal-scroll div {
+  float:left;
+}
+
+#horizontal-scroll div div {
+  height:100px;  
+  background:green;
+  display:inline-block;
+  float:left;
+}
+
+
+p.fake {
+  color:#bbb;
+}
+
+p:last-child {
+  padding-bottom:12px;
+}

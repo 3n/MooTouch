@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>MooTouch Demo</title>
+  <meta name="description" content="Demo for MooTouch">
+  <meta name="author" content="Ian Collins">
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+
+  <div id="container">
+    <header>
+			<h1>MooTouch Demo</h1>
+    </header>
+    
+    <div id="main">
+			<div id="scrollview" class="scrollview">
+				<p><b>
+				A small "framework" to help in building applications with MooTools for touch-
+				capable devices. 
+				</b></p>
+				<p>
+				Currently provides a few helper events for common gestures, some Element
+				extensions for getting and setting the translate3d property and a 
+				native iOS scrolling emulation class.
+				</p>
+				<p>
+				All code works on old-school "desktop" browsers as well, as "mouse" events
+				are handled the same as touch events.
+				</p>				
+				
+				<ul class="section">
+					<li id="tap">Tap Me<span>0</span></li>
+					<li id="swipe">Swipe Me<span>0 / 0</span></li>
+				</ul>
+				
+				<p><b>Scrolling</b></p>
+				
+				<p>
+					If you hadn't already noticed, you can scroll the contents of this box like a native
+					iOS application. The indicators are on by default, but can be turned off. In fact, all
+					aspects of the interaction and animation can be customized.
+				</p>
+				
+				<p>
+					Here is an example of horizontal-only scrolling, which is locked to a grid (pagingEnabled:true),
+					simulating a swipe-to-navigate interface like the Photos app.
+		    </p>
+				
+				<div id="horizontal-scroll" class="section">
+				</div>
+				
+				<p class="fake">
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</p>
+				
+				<p class="fake">
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</p>
+				
+				<p class="fake">
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</p>
+				
+				<p class="fake">
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</p>
+				
+				<p class="fake">
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</p>
+				
+				<p class="fake">
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</p>
+				
+			</div>
+    </div>
+    
+    <footer>
+    </footer>
+  </div>
+  <script type="text/javascript" src="mootools-core.js"></script>
+  <script type="text/javascript" src="mootools-class-extras.js"></script>
+
+  <script type="text/javascript" src="../Source/MTCore.js"></script>
+  <script type="text/javascript" src="../Source/MTSwipeEvent.js"></script>
+  <script type="text/javascript" src="../Source/MTTapEvent.js"></script>
+  <script type="text/javascript" src="../Source/MTPoint.js"></script>
+  <script type="text/javascript" src="../Source/MTTranslate.js"></script>
+  <script type="text/javascript" src="../Source/MTScrollView.js"></script>
+  <script>
+	
+		Element.implement({
+		  addClassForDuration: function(className, duration){
+		    this.addClass(className);
+		    this.removeClass.delay(duration, this, className);
+		  }
+		});
+	
+		window.addEvent('domready', function(){
+			$('scrollview').setStyle('height', window.getHeight() - $('scrollview').getTop() - 12);
+
+			var tap_total = 0,
+					swipe_left_total = 0,
+					swipe_right_total = 0;				
+
+			$('tap').addEvent('tap', function(){
+				this.getElement('span').set('html', ++tap_total)
+						.addClassForDuration('pop', 200);
+			});
+			$('swipe').addEvent('swipe', function(e){
+				e.direction === 'right' ? swipe_right_total++ : swipe_left_total++;
+				this.getElement('span').set('html', swipe_left_total + ' / ' + swipe_right_total)
+						.addClassForDuration('pop', 200);
+			});
+
+			var width = $('horizontal-scroll').getWidth(),
+			 		horizontal_pieces = [],
+					colors = ['#FC5252','#52CC74','#00AFE6','#FF0094','#FDFE57','#333'];
+
+			(10).times(function(){
+				horizontal_pieces.push(new Element('div').setStyles({
+					'width' : width,
+					'background' : colors.getRandom()
+				}));
+			});
+
+			$('horizontal-scroll').grab(new Element('div').setStyle('width', width * 10).adopt(horizontal_pieces));
+
+			new MTScrollView('horizontal-scroll', { 
+				axis:['x'], 
+				pagingEnabled: true
+			});
+			
+			sv = new MTScrollView($('scrollview'));
+		});
+
+	</script>
+
+</body>
+</html>
