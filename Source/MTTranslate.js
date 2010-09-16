@@ -17,40 +17,40 @@ provides: MTTranslate
 */
 
 Element.implement({
-  getTranslate3d: function(){
-    var match = this.getStyle('-webkit-transform').match(/translate3d\(([\.\-0-9]+)[^\.\-0-9]+([\.\-0-9]+)[^\.\-0-9]+([\.\-0-9]+)[^\.\-0-9]+/);
+	getTranslate3d: function(){
+		var match = this.getStyle('-webkit-transform').match(/translate3d\(([\.\-0-9]+)[^\.\-0-9]+([\.\-0-9]+)[^\.\-0-9]+([\.\-0-9]+)[^\.\-0-9]+/);
 
-    if (match && match.shift() && match.length === 3)
-      return new MTPoint(match[0].toInt(), match[1].toInt(), match[2].toInt());
-  },
+		if (match && match.shift() && match.length === 3)
+			return new MTPoint(match[0].toInt(), match[1].toInt(), match[2].toInt());
+	},
 
-  setTranslate3d: function(x,y,z){
-    var oldPoint = this.getTranslate3d() || new MTPoint(0,0,0);
+	setTranslate3d: function(x,y,z){
+		var oldPoint = this.getTranslate3d() || new MTPoint(0,0,0);
 
-    x = (x != null) ? x : oldPoint.x;
-    y = (y != null) ? y : oldPoint.y;
-    z = (z != null) ? z : oldPoint.z;
+		x = (x != null) ? x : oldPoint.x;
+		y = (y != null) ? y : oldPoint.y;
+		z = (z != null) ? z : oldPoint.z;
 
-    var newPoint = new MTPoint(x,y,z);
+		var newPoint = new MTPoint(x,y,z);
 
-    if (newPoint.equals(oldPoint))
-      return this;
+		if (newPoint.equals(oldPoint))
+			return this;
 
-    var previousTransform = (this.getStyle('webkitTransform') || '').replace(/translate3d\([^)]+\)/,'');
-    this.setStyle('webkitTransform', previousTransform + " translate3d(" + x + "px," + y + "px," + z + "px)");
+		var previousTransform = (this.getStyle('webkitTransform') || '').replace(/translate3d\([^)]+\)/,'');
+		this.setStyle('webkitTransform', previousTransform + " translate3d(" + x + "px," + y + "px," + z + "px)");
 
-    return this;
-  },
-  setTranslate: function(x,y, useZero){
-    return this.setTranslate3d(x, y, useZero ? 0 : null);
-  },
-  setTranslateX: function(x, useZero){
-    return this.setTranslate3d(x, useZero ? 0 : null, useZero ? 0 : null);
-  },
-  setTranslateY: function(y, useZero){
-    return this.setTranslate3d(useZero ? 0 : null, y, useZero ? 0 : null);
-  },
-  setTranslateZ: function(z, useZero){
-    return this.setTranslate3d(useZero ? 0 : null, useZero ? 0 : null, z);
-  }
+		return this;
+	},
+	setTranslate: function(x,y, useZero){
+		return this.setTranslate3d(x, y, useZero ? 0 : null);
+	},
+	setTranslateX: function(x, useZero){
+		return this.setTranslate3d(x, useZero ? 0 : null, useZero ? 0 : null);
+	},
+	setTranslateY: function(y, useZero){
+		return this.setTranslate3d(useZero ? 0 : null, y, useZero ? 0 : null);
+	},
+	setTranslateZ: function(z, useZero){
+		return this.setTranslate3d(useZero ? 0 : null, useZero ? 0 : null, z);
+	}
 });

@@ -19,7 +19,7 @@ provides: MTCore
 Element.NativeEvents.webkitTransitionEnd = 2;
 
 var MT = {
-  supportsTouches : 'createTouch' in document
+	supportsTouches : 'createTouch' in document
 };
 
 MT.startEvent = MT.supportsTouches ? 'touchstart' : 'mousedown';
@@ -27,5 +27,5 @@ MT.moveEvent = MT.supportsTouches ? 'touchmove' : 'mousemove';
 MT.endEvent = MT.supportsTouches ? 'touchend' : 'mouseup';
 
 MT.getEvent = function(event){
-  return (event.touches && event.touches.length > 0) ? event.touches[0] : event;
+	return (event.touches && event.touches.length > 0) ? event.touches[0] : event;
 };
