@@ -26,7 +26,7 @@ function MTPoint (x, y, z) {
   }
   this.x = (x != null && !isNaN(x)) ? x : 0;
   this.y = (y != null && !isNaN(y)) ? y : 0;
-  this.z = (z != null && !isNaN(z)) ? z : 0;  
+  this.z = (z != null && !isNaN(z)) ? z : 0;
 };
 
 MTPoint.prototype.equals = function (pointB) {

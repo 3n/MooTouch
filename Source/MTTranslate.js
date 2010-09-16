@@ -23,22 +23,22 @@ Element.implement({
     if (match && match.shift() && match.length === 3)
       return new MTPoint(match[0].toInt(), match[1].toInt(), match[2].toInt());
   },
-  
-  setTranslate3d: function(x,y,z){  
+
+  setTranslate3d: function(x,y,z){
     var oldPoint = this.getTranslate3d() || new MTPoint(0,0,0);
 
     x = $chk(x) ? x : oldPoint.x;
     y = $chk(y) ? y : oldPoint.y;
     z = $chk(z) ? z : oldPoint.z;
-    
+
     var newPoint = new MTPoint(x,y,z);
 
     if (newPoint.equals(oldPoint))
       return this;
-    
-    var previousTransform = (this.getStyle('webkitTransform') || '').replace(/translate3d\([^)]+\)/,'');    
+
+    var previousTransform = (this.getStyle('webkitTransform') || '').replace(/translate3d\([^)]+\)/,'');
     this.setStyle('webkitTransform', previousTransform + " translate3d(" + x + "px," + y + "px," + z + "px)");
-    
+
     return this;
   },
   setTranslate: function(x,y, useZero){

@@ -18,11 +18,11 @@ provides: MTSwipeEvent
 
 Element.Events.swipe = {
   allSwipesCanceled : false,
-  
+
   cancelAllSwipes : function(){
     Element.Events.swipe.allSwipesCanceled = true;
   },
-  
+
   onAdd: function(fn){
     var startX, startY, active = false;
 
@@ -34,43 +34,43 @@ Element.Events.swipe = {
       startY = originalEvent.pageY;
     };
     var touchMove = function(event){
-      var originalEvent = MT.getEvent(event.event);      
+      var originalEvent = MT.getEvent(event.event);
       var endX  = originalEvent.pageX,
-          endY  = originalEvent.pageY,          
+          endY  = originalEvent.pageY,
           diff  = endX - startX,
           isLeftSwipe = diff < -1 * Element.Events.swipe.swipeWidth,
           isRightSwipe = diff > Element.Events.swipe.swipeWidth;
 
-      if (active && !Element.Events.swipe.allSwipesCanceled && (isRightSwipe || isLeftSwipe)          
+      if (active && !Element.Events.swipe.allSwipesCanceled && (isRightSwipe || isLeftSwipe)
           && (event.onlySwipeLeft ? isLeftSwipe : true)
           && (event.onlySwipeRight ? isRightSwipe : true) ){
         active = false;
         fn.call(this, {
-          'direction' : isRightSwipe ? 'right' : 'left', 
+          'direction' : isRightSwipe ? 'right' : 'left',
           'startX'    : startX,
           'endX'      : endX,
           'startY'    : startY,
           'endY'      : endY
         }, event);
       }
-      
+
       if (Element.Events.swipe.cancelVertical
           && Math.abs(startY - endY) < Math.abs(startX - endX)){
         return false;
       }
     };
 
-    this.addEvent(MT.startEvent, touchStart);    
+    this.addEvent(MT.startEvent, touchStart);
     this.addEvent(MT.moveEvent, touchMove);
-    
+
     var swipeAddedEvents = {};
     swipeAddedEvents[fn] = {};
     swipeAddedEvents[fn][MT.startEvent] = touchStart;
     swipeAddedEvents[fn][MT.moveEvent]  = touchMove;
-    
+
     this.store('swipeAddedEvents', swipeAddedEvents);
   },
-  
+
   onRemove: function(fn){
     $H(this.retrieve('swipeAddedEvents')[fn]).each(function(v,k){
       this.removeEvent(k,v);
