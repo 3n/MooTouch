@@ -27,9 +27,9 @@ Element.implement({
   setTranslate3d: function(x,y,z){
     var oldPoint = this.getTranslate3d() || new MTPoint(0,0,0);
 
-    x = $chk(x) ? x : oldPoint.x;
-    y = $chk(y) ? y : oldPoint.y;
-    z = $chk(z) ? z : oldPoint.z;
+    x = (x != null) ? x : oldPoint.x;
+    y = (y != null) ? y : oldPoint.y;
+    z = (z != null) ? z : oldPoint.z;
 
     var newPoint = new MTPoint(x,y,z);
 

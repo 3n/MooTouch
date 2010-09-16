@@ -55,7 +55,7 @@ var MTScrollView = new Class({
 
   initialize: function(scrollArea, options){
     this.setOptions(options);
-    if ($defined(this.options.pageSize))
+    if (this.options.pageSize != null)
       this.customPageSize = true;
 
     this.scrollArea = document.id(scrollArea);
@@ -64,7 +64,7 @@ var MTScrollView = new Class({
     this.hostingLayer = new Element('div').inject(this.scrollArea, 'top');
     this.hostingLayer.adopt(this.hostingLayer.getAllNext());
 
-    this.indicators = $H();
+    this.indicators = {};
     this.options.axis.each(function(axis){
       this.indicators[axis] = new Element('div', {
         'class': this.options.indicatorClass + ' ' + axis + '-axis-' + this.options.indicatorClass
@@ -75,8 +75,8 @@ var MTScrollView = new Class({
     this.refreshSizes();
 
     // gets the view ready to be translate, fixes initial stickyness.
-    this.scrollToPoint(new MTPoint(0,1,0));
-    this.scrollToPoint(new MTPoint(0,0,0));
+    this.scrollToPoint(new MTPoint(0, 1, 0));
+    this.scrollToPoint(new MTPoint(0, 0, 0));
 
     this.tapCompatibility();
 
@@ -85,12 +85,12 @@ var MTScrollView = new Class({
 
   // Event attaching and handling
   attach: function(){
-    $$([this.scrollArea, this.hostingLayer]).addEvent('webkitTransitionEnd', this.bound('transitionEnded'));
+    $$(this.scrollArea, this.hostingLayer).addEvent('webkitTransitionEnd', this.bound('transitionEnded'));
     this.scrollArea.addEventListener(MT.startEvent, this.bound('touchesBegan'), true);
   },
   detach: function(){
     this.detachTrackingEvents();
-    $$([this.scrollArea, this.hostingLayer]).removeEvent('webkitTransitionEnd', this.bound('transitionEnded'));
+    $$(this.scrollArea, this.hostingLayer).removeEvent('webkitTransitionEnd', this.bound('transitionEnded'));
     this.scrollArea.removeEventListener(MT.startEvent, this.bound('touchesBegan'), true);
   },
   attachTrackingEvents: function(){
@@ -190,7 +190,7 @@ var MTScrollView = new Class({
     this.addPointToHistory(event.timeStamp, this.currentScroll.copy());
   },
   touchesEnded: function(event, dontDetach){
-    if (!$defined(dontDetach))
+    if (dontDetach == null)
       this.detachTrackingEvents();
 
     if (this.isDragging) {
@@ -293,7 +293,7 @@ var MTScrollView = new Class({
       this.fireEvent('scrollEnd', this);
     }
     this.isDecelerating = false;
-    $clear(this.decelerationTimer);
+    clearTimeout(this.decelerationTimer);
   },
   decelerationFrame: function(fast){
     if (!this.isDecelerating)
@@ -393,7 +393,7 @@ var MTScrollView = new Class({
         var scale = 1,
             scaleDiff = 0;
 
-        if (!$defined(this.startingIndicatorSizes)){
+        if (this.startingIndicatorSizes == null){
           this.startingIndicatorSizes = {};
           this.startingIndicatorSizes[axis] = dim;
           this.indicators[axis].setStyle(mapping[axis][0], dim);
@@ -439,7 +439,7 @@ var MTScrollView = new Class({
     return this.scrollToPoint(new MTPoint(), true);
   },
   scrollTo: function(x,y,animate){
-    animate = $defined(animate) ? animate : true;
+    animate = (animate != null) ? animate : true;
     return this.scrollToPoint(new MTPoint(x,y), animate);
   },
 

@@ -19,7 +19,7 @@ provides: MTPoint
 // MTPoint helper class
 // Represents a point with x,y,z axis. Default value is 0.
 function MTPoint (x, y, z) {
-  if ($type(x) === 'object'){
+  if (typeOf(x) == 'object'){
     z = x.z;
     y = x.y;
     x = x.x;
