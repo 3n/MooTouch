@@ -135,7 +135,7 @@ var MTScrollView = new Class({
 		this.addPointToHistory(event.timeStamp, this.currentScroll, true);
 
 		this.startScrollPosition = this.currentScroll.copy();
-		this.startTouchPosition = MTPoint.fromEventInElement(event, this.scrollArea);
+		this.startTouchPosition = MTPoint.fromElement(this.scrollArea, MT.getEvent(event));
 
 		this.isDragging = false;
 
@@ -149,8 +149,8 @@ var MTScrollView = new Class({
 
 		event.preventDefault();
 
-		var touch_position = MTPoint.fromEventInElement(event, this.scrollArea);
-		var deltaPoint = touch_position.minus(this.startTouchPosition);
+		var touch_position = MTPoint.fromElement(this.scrollArea, MT.getEvent(event));
+		var deltaPoint = touch_position.subtract(this.startTouchPosition);
 
 		if (!this.isDragging){
 			if (this.options.axis.some(function(axis){ return deltaPoint[axis].abs() >= this.options.minimumTrackingForDrag; }.bind(this))){
@@ -263,7 +263,7 @@ var MTScrollView = new Class({
 		this.setDecelerationVelocity();
 
 		this.minDecelerationPoint = new MTPoint();
-		this.maxDecelerationPoint = new MTPoint(this.contentSize);
+		this.maxDecelerationPoint = new MTPoint(this.contentSize.x, this.contentSize.y);
 
 		if (this.options.pagingEnabled){
 			this.minDecelerationPoint.x = Math.max(0, Math.floor(this.currentScrollBeforeDeceleration.x / this.options.pageSize.x) * this.options.pageSize.x);
@@ -440,7 +440,7 @@ var MTScrollView = new Class({
 	},
 	scrollTo: function(x,y,animate){
 		animate = (animate != null) ? animate : true;
-		return this.scrollToPoint(new MTPoint(x,y), animate);
+		return this.scrollToPoint(new MTPoint(x, y), animate);
 	},
 
 
@@ -458,7 +458,7 @@ var MTScrollView = new Class({
 		return (this.oldestTime - this.latestTime) / this.options.scrollAcceleration;
 	},
 	finalDistance: function(){
-		return this.oldestPoint.minus(this.latestPoint);
+		return this.oldestPoint.subtract(this.latestPoint);
 	},
 	setDecelerationVelocity: function(){
 		this.decelerationVelocity = this.finalDistance().copy(function(val){

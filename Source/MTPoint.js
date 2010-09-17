@@ -16,42 +16,44 @@ provides: MTPoint
 ...
 */
 
-function MTPoint (x, y, z){
-	if (typeOf(x) == 'object'){
-		z = x.z;
-		y = x.y;
-		x = x.x;
+var MTPoint = function MTPoint(x, y, z){
+	if (x != null && !isNaN(x)) this.x = x;
+	if (y != null && !isNaN(y)) this.y = y;
+	if (z != null && !isNaN(z)) this.z = z;
+};
+
+MTPoint.prototype = {
+
+	x: 0, y: 0, z: 0,
+
+	equals: function(point){
+		return (this.x == point.x && this.y == point.y && this.z == point.z);
+	},
+
+	subtract: function(point){
+		return new MTPoint(
+			this.x - point.x,
+			this.y - point.y,
+			this.z - point.z
+		);
+	},
+
+	add: function(point){
+		return new MTPoint(
+			this.x + point.x,
+			this.y + point.y,
+			this.z + point.z
+		);
+	},
+
+	copy: function(fn){
+		if (fn) return new MTPoint(fn.call(this, this.x, 'x'), fn.call(this, this.y, 'y'), fn.call(this, this.z, 'z'));
+		return new MTPoint(this.x, this.y, this.z);
 	}
-	this.x = (x != null && !isNaN(x)) ? x : 0;
-	this.y = (y != null && !isNaN(y)) ? y : 0;
-	this.z = (z != null && !isNaN(z)) ? z : 0;
+
 };
 
-MTPoint.prototype.equals = function(pointB){
-	return (this.x === pointB.x && this.y === pointB.y);
-};
-MTPoint.prototype.minus = function(pointB){
-	return new MTPoint(
-		this.x - pointB.x,
-		this.y - pointB.y
-	);
-};
-MTPoint.prototype.plus = function(pointB){
-	return new MTPoint(
-		this.x + pointB.x,
-		this.y + pointB.y
-	);
-};
-
-MTPoint.prototype.copy = function(fn){
-	if (fn)
-		return new MTPoint(fn(this.x, 'x'), fn(this.y, 'y'));
-	else
-		return new MTPoint(this.x, this.y);
-};
-
-MTPoint.fromEventInElement = function(event, element){
-	event = MT.getEvent(event);
-	var wkPoint = window.webkitConvertPointFromPageToNode(element, new WebKitPoint(event.pageX, event.pageY));
-	return new MTPoint(wkPoint.x, wkPoint.y);
+MTPoint.fromElement = function(element, position){
+	var point = window.webkitConvertPointFromPageToNode(element, new WebKitPoint(position.pageX, position.pageY));
+	return new MTPoint(point.x, point.y);
 };
