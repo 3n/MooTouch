@@ -17,40 +17,26 @@ provides: MTTranslate
 */
 
 Element.implement({
+
 	getTranslate3d: function(){
 		var match = this.getStyle('-webkit-transform').match(/translate3d\(([\.\-0-9]+)[^\.\-0-9]+([\.\-0-9]+)[^\.\-0-9]+([\.\-0-9]+)[^\.\-0-9]+/);
-
-		if (match && match.shift() && match.length === 3)
-			return new MTPoint(match[0].toInt(), match[1].toInt(), match[2].toInt());
+		if (!match || match.length !== 4) return null;
+		return new MTPoint(match[1].toInt(), match[2].toInt(), match[3].toInt());
 	},
 
-	setTranslate3d: function(x,y,z){
-		var oldPoint = this.getTranslate3d() || new MTPoint(0,0,0);
+	setTranslate3d: function(x, y, z){
+		var point = this.getTranslate3d() || new MTPoint(0, 0, 0);
+		x = (x != null) ? x : point.x;
+		y = (y != null) ? y : point.y;
+		z = (z != null) ? z : point.z;
 
-		x = (x != null) ? x : oldPoint.x;
-		y = (y != null) ? y : oldPoint.y;
-		z = (z != null) ? z : oldPoint.z;
+		if (new MTPoint(x, y, z).equals(point)) return this;
 
-		var newPoint = new MTPoint(x,y,z);
+		var transform = this.getStyle('-webkit-transform'),
+			previousTransform = '' + (transform != 'none' ? transform : '').replace(/translate3d\([^)]+\)/, '');
 
-		if (newPoint.equals(oldPoint))
-			return this;
-
-		var previousTransform = (this.getStyle('webkitTransform') || '').replace(/translate3d\([^)]+\)/,'');
-		this.setStyle('webkitTransform', previousTransform + " translate3d(" + x + "px," + y + "px," + z + "px)");
-
+		this.setStyle('-webkit-transform', previousTransform + ' translate3d(' + x + 'px,' + y + 'px,' + z + 'px)');
 		return this;
-	},
-	setTranslate: function(x,y, useZero){
-		return this.setTranslate3d(x, y, useZero ? 0 : null);
-	},
-	setTranslateX: function(x, useZero){
-		return this.setTranslate3d(x, useZero ? 0 : null, useZero ? 0 : null);
-	},
-	setTranslateY: function(y, useZero){
-		return this.setTranslate3d(useZero ? 0 : null, y, useZero ? 0 : null);
-	},
-	setTranslateZ: function(z, useZero){
-		return this.setTranslate3d(useZero ? 0 : null, useZero ? 0 : null, z);
 	}
+
 });

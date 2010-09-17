@@ -230,7 +230,7 @@ var MTScrollView = new Class({
 			}.bind(this));
 		}
 
-		this.hostingLayer.setTranslate(-this.currentScroll.x, -this.currentScroll.y);
+		this.hostingLayer.setTranslate3d(-this.currentScroll.x, -this.currentScroll.y);
 
 		if (animate)
 			this.hostingLayer.setStyle('-webkit-transition-duration', this.options.pagingTransitionDuration);
@@ -387,7 +387,8 @@ var MTScrollView = new Class({
 		};
 
 		this.options.axis.each(function(axis){
-			if (this.indicators[axis] && this.options['showScrollIndicator' + axis.toUpperCase()]){
+			var element = this.indicators[axis];
+			if (element && this.options['showScrollIndicator' + axis.toUpperCase()]){
 				var dim = this.scrollAreaSize[axis] * (this.scrollAreaSize[axis] / this.hostingLayerSize[axis]).limit(0,1);
 				var pos = (this.scrollAreaSize[axis] - dim) * (this.currentScroll[axis] / this.contentSize[axis]);
 				var scale = 1,
@@ -396,7 +397,7 @@ var MTScrollView = new Class({
 				if (this.startingIndicatorSizes == null){
 					this.startingIndicatorSizes = {};
 					this.startingIndicatorSizes[axis] = dim;
-					this.indicators[axis].setStyle(mapping[axis][0], dim);
+					element.setStyle(mapping[axis][0], dim);
 				}
 
 				if (this.currentScroll[axis] < 0){
@@ -412,13 +413,18 @@ var MTScrollView = new Class({
 				}
 
 				if (animate)
-					this.indicators[axis].setStyle('-webkit-transition-duration', this.options.pagingTransitionDuration);
+					element.setStyle('-webkit-transition-duration', this.options.pagingTransitionDuration);
 				else
-					this.indicators[axis].setStyle('-webkit-transition-duration', 0);
+					element.setStyle('-webkit-transition-duration', 0);
 
 				if (this.options.indicatorHeightEffect)
-					this.indicators[axis].setStyle('webkitTransform', 'scale' + axis.toUpperCase() + '(' + scale + ')');
-				this.indicators[axis]['setTranslate' + axis.toUpperCase()](pos + (this.options.indicatorHeightEffect ? scaleDiff : 0));
+					element.setStyle('webkitTransform', 'scale' + axis.toUpperCase() + '(' + scale + ')');
+
+				var args = [pos + (this.options.indicatorHeightEffect ? scaleDiff : 0)];
+				if (axis == 'y') args.unshift(0);
+				if (axis == 'z') args.unshift(0, 0); // Yikes !
+
+				element.setTranslate3d.apply(element, args);
 			}
 		}, this);
 	},
