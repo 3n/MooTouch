@@ -153,7 +153,7 @@ var MTScrollView = new Class({
 		var deltaPoint = touch_position.subtract(this.startTouchPosition);
 
 		if (!this.isDragging){
-			if (this.options.axis.some(function(axis){ return deltaPoint[axis].abs() >= this.options.minimumTrackingForDrag; }.bind(this))){
+			if (this.options.axis.some(function(axis){ return Math.abs(deltaPoint[axis]) >= this.options.minimumTrackingForDrag; }.bind(this))){
 				this.fireEvent('willBeginDragging', this);
 				this.isDragging = true;
 				this.firstDrag = true;
@@ -280,7 +280,7 @@ var MTScrollView = new Class({
 		}
 
 		var min_velocity = this.options.pagingEnabled ? this.options.minVelocityForDecelerationWhenPaging : this.options.minVelocityForDeceleration;
-		if (this.decelerationVelocity.x.abs() > min_velocity || this.decelerationVelocity.y.abs() > min_velocity){
+		if (Math.abs(this.decelerationVelocity.x) > min_velocity || Math.abs(this.decelerationVelocity.y) > min_velocity){
 			this.isDecelerating = true;
 			this.decelerationTimer = this.decelerationFrame.delay(this.options.frameRate, this);
 			this.lastFrame = new Date();
@@ -333,8 +333,8 @@ var MTScrollView = new Class({
 		}
 
 		// todo make MTPoint a hash and use .some()
-		if (!fast && this.decelerationVelocity.x.abs() <= this.options.minVelocity
-				&& this.decelerationVelocity.y.abs() <= this.options.minVelocity){
+		if (!fast && Math.abs(this.decelerationVelocity.x) <= this.options.minVelocity
+				&& Math.abs(this.decelerationVelocity.y) <= this.options.minVelocity){
 			this.hideIndicators();
 			this.decelerationAnimationCompleted();
 			return;
@@ -500,10 +500,4 @@ var MTScrollView = new Class({
 			this.addEvent('onWillBeginDragging', Element.Events.swipe.cancelAllSwipes);
 	}
 
-});
-
-Number.implement({
-	abs: function(){
-		return Math.abs(this);
-	}
 });
