@@ -54,6 +54,6 @@ MTPoint.prototype = {
 };
 
 MTPoint.fromElement = function(element, position){
-	var point = window.webkitConvertPointFromPageToNode(element, new WebKitPoint(position.pageX, position.pageY));
+	var point = window.webkitConvertPointFromPageToNode(element, new WebKitPoint(position.x, position.y));
 	return new MTPoint(point.x, point.y);
 };

@@ -24,7 +24,7 @@ provides: [Core, MooTools, Type, typeOf, instanceOf]
 
 this.MooTools = {
 	version: '1.3dev',
-	build: 'fa735d9b515cf55703611320d7cfb8732093a94b'
+	build: '19e65d42d15925dfb28415ed0c9c36b07b5cc4b6'
 };
 
 // typeOf, instanceOf
@@ -2539,7 +2539,7 @@ Document.implement({
 		var types = {
 
 			string: function(id, nocash, doc){
-				id = Slick.find(doc, '#' + id);
+				id = Slick.find(doc, '#' + id.replace(/(\W)/g, '\\$1'));
 				return (id) ? types.element(id, nocash) : null;
 			},
 
@@ -2859,7 +2859,7 @@ Element.implement({
 	},
 
 	getElementById: function(id){
-		return document.id(Slick.find(this, '#' + id));
+		return document.id(Slick.find(this, '#' + ('' + id).replace(/(\W)/g, '\\$1')));
 	},
 
 	getSelected: function(){
@@ -3260,9 +3260,14 @@ var Event = new Type('Event', function(event, win){
 	} else if (type.test(/gesture|touch/i)){
 		this.rotation = event.rotation;
 		this.scale = event.scale;
-		this.touches = event.touches;
 		this.targetTouches = event.targetTouches;
 		this.changedTouches = event.changedTouches;
+		var touches = this.touches = event.touches;
+		if (touches && touches[0]){
+			var touch = touches[0];
+			page = {x: touch.pageX, y: touch.pageY};
+			client = {x: touch.clientX, y: touch.clientY};
+		}
 	}
 
 	return Object.append(this, {
@@ -3948,7 +3953,7 @@ Element.alias({position: 'setPosition'}); //compatability
 /*
 ---
 
-name: DomReady
+name: DOMReady
 
 description: Contains the custom event domready.
 
@@ -3956,7 +3961,7 @@ license: MIT-style license.
 
 requires: [Browser, Element, Element.Event]
 
-provides: DomReady
+provides: DOMReady
 
 ...
 */
@@ -3964,6 +3969,7 @@ provides: DomReady
 (function(window, document){
 
 var ready,
+	loaded,
 	checks = [],
 	shouldPoll,
 	timer,
@@ -3985,11 +3991,11 @@ var domready = function(){
 };
 
 var check = function(){
-	for (var i = checks.length; i--; ) if (checks[i]()){
+	for (var i = checks.length; i--;) if (checks[i]()){
 		domready();
 		return true;
 	}
-	
+
 	return false;
 };
 
@@ -4016,7 +4022,6 @@ if (testElement.doScroll && !isFramed){
 
 if (document.readyState) checks.push(function(){
 	var state = document.readyState;
-
 	return (state == 'loaded' || state == 'complete');
 });
 
@@ -4025,26 +4030,31 @@ else shouldPoll = true;
 
 if (shouldPoll) poll();
 
-var onAdd = function(fn){
-	if (ready) fn.call(this);
-};
-
 Element.Events.domready = {
-	onAdd: onAdd
+	onAdd: function(fn){
+		if (ready) fn.call(this);
+	}
 };
 
 // Make sure that domready fires before load
 Element.Events.load = {
 	base: 'load',
-	onAdd: onAdd,
+	onAdd: function(fn){
+		if (loaded && this == window) fn.call(this);
+	},
 	condition: function(){
-		domready();
+		if (this == window){
+			domready();
+			delete Element.Events.load;
+		}
+		
 		return true;
 	}
 };
 
-window.addEvent('load',function(){
-	delete Element.Events.load;
+// This is based on the custom load event
+window.addEvent('load', function(){
+	loaded = true;
 });
 
 })(window, document);

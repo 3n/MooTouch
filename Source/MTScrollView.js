@@ -9,14 +9,31 @@ authors: Ian Collins (@3n)
 
 license: MIT-style license.
 
-requires: [Core/Class.Extras, Core/Element.Event, Core/Element.Dimensions, Core/Number, Class-Extras/Class.Binds, MTPoint, MTTranslate]
+requires: [Core/Class.Extras, Core/Element.Event, Core/Element.Dimensions, Core/Number, Class-Extras/Class.Binds, Custom-Event/Element.defineCustomEvent, Mobile/Browser.Features.Touch, MTPoint, MTTranslate]
 
 provides: MTScrollView
 
 ...
 */
 
-var MTScrollView = new Class({
+(function(){
+
+var events = Browser.Features.Touch ? {
+	start: 'touchstart',
+	move: 'touchmove',
+	end: 'touchend'
+} : {
+	start: 'mousedown',
+	move: 'mousemove',
+	end: 'mouseup'
+};
+
+var getPosition = function(event){
+	var position = (event.touches && event.touches.length > 0) ? event.touches[0] : event;
+	return {x: position.pageX, y: position.pageY};
+};
+
+this.MTScrollView = new Class({
 
 	Implements: [Options, Events, Class.Binds],
 
@@ -77,8 +94,8 @@ var MTScrollView = new Class({
 		// gets the view ready to be translate, fixes initial stickyness.
 		this.scrollToPoint(new MTPoint(0, 1, 0));
 		this.scrollToPoint(new MTPoint(0, 0, 0));
-
-		this.tapCompatibility();
+		
+		this.addEvent('onWillBeginDragging', Element.disableCustomEvents);
 
 		return this;
 	},
@@ -86,21 +103,21 @@ var MTScrollView = new Class({
 	// Event attaching and handling
 	attach: function(){
 		$$(this.scrollArea, this.hostingLayer).addEvent('webkitTransitionEnd', this.bound('transitionEnded'));
-		this.scrollArea.addEventListener(MT.startEvent, this.bound('touchesBegan'), true);
+		this.scrollArea.addEventListener(events.start, this.bound('touchesBegan'), true);
 	},
 	detach: function(){
 		this.detachTrackingEvents();
 		$$(this.scrollArea, this.hostingLayer).removeEvent('webkitTransitionEnd', this.bound('transitionEnded'));
-		this.scrollArea.removeEventListener(MT.startEvent, this.bound('touchesBegan'), true);
+		this.scrollArea.removeEventListener(events.start, this.bound('touchesBegan'), true);
 	},
 	attachTrackingEvents: function(){
-		this.options.eventElement.addEventListener(MT.moveEvent, this.bound('touchesMoved'), true);
-		this.options.eventElement.addEventListener(MT.endEvent,	this.bound('touchesEnded'), true);
+		this.options.eventElement.addEventListener(events.move, this.bound('touchesMoved'), true);
+		this.options.eventElement.addEventListener(events.end,	this.bound('touchesEnded'), true);
 		this.options.eventElement.addEventListener('touchcancel', this.bound('touchesCancelled'), true);
 	},
 	detachTrackingEvents: function(){
-		this.options.eventElement.removeEventListener(MT.moveEvent, this.bound('touchesMoved'), true);
-		this.options.eventElement.removeEventListener(MT.endEvent, this.bound('touchesEnded'), true);
+		this.options.eventElement.removeEventListener(events.move, this.bound('touchesMoved'), true);
+		this.options.eventElement.removeEventListener(events.end, this.bound('touchesEnded'), true);
 		this.options.eventElement.removeEventListener('touchcancel', this.bound('touchesCancelled'), true);
 	},
 
@@ -135,7 +152,7 @@ var MTScrollView = new Class({
 		this.addPointToHistory(event.timeStamp, this.currentScroll, true);
 
 		this.startScrollPosition = this.currentScroll.copy();
-		this.startTouchPosition = MTPoint.fromElement(this.scrollArea, MT.getEvent(event));
+		this.startTouchPosition = MTPoint.fromElement(this.scrollArea, getPosition(event));
 
 		this.isDragging = false;
 
@@ -149,7 +166,8 @@ var MTScrollView = new Class({
 
 		event.preventDefault();
 
-		var touch_position = MTPoint.fromElement(this.scrollArea, MT.getEvent(event));
+		var position = getPosition(event);
+		var touch_position = MTPoint.fromElement(this.scrollArea, position);
 		var deltaPoint = touch_position.subtract(this.startTouchPosition);
 
 		if (!this.isDragging){
@@ -166,7 +184,7 @@ var MTScrollView = new Class({
 				return;
 			}
 
-			if (this.windowHeight - this.options.bottomCancelHeight < MT.getEvent(event).pageY){
+			if (this.windowHeight - this.options.bottomCancelHeight < position.y){
 				this.touchesEnded(event, true);
 				return;
 			}
@@ -211,6 +229,10 @@ var MTScrollView = new Class({
 			this.hideIndicators();
 		}
 		this.touchesBeganFired = false;
+
+		(function(){
+			Element.enableCustomEvents();
+		}).delay(1);
 	},
 	touchesCancelled: function(event){
 		this.touchesEnded(event);
@@ -490,14 +512,8 @@ var MTScrollView = new Class({
 	},
 	enableScroll: function(){
 		this.scrollEnabled = true;
-	},
-
-	tapCompatibility: function(){
-		if (Element.Events.tap && Element.Events.tap.cancelAllTaps)
-			this.addEvent('onWillBeginDragging', Element.Events.tap.cancelAllTaps);
-
-		if (Element.Events.swipe && Element.Events.swipe.cancelAllSwipes)
-			this.addEvent('onWillBeginDragging', Element.Events.swipe.cancelAllSwipes);
 	}
 
 });
+
+})();

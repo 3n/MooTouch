@@ -19,6 +19,18 @@ are handled the same as touch events.
 
 A demo can be found here: [http://iancollins.me/MooTouch-Demo/](http://iancollins.me/MooTouch-Demo/)
 
+Build
+-----
+
+Build via [Packager](http://github.com/kamicane/packager), requires [MooTools Core](http://github.com/mootools/mootools-core), [MooTools Custom Event](http://github.com/cpojer/mootools-custom-event),  [MooTools Class-Extras](http://github.com/cpojer/mootools-class-extras) and  [MooTools Mobile](http://github.com/cpojer/mootools-mobile) to be registered to Packager already
+
+	./packager register /path/to/mootouch
+	./packager build MooTouch/* > mootouch.js
+
+To build this plugin without external dependencies use
+
+	./packager build MooTouch/* +use-only MooTouch > mootouch.js
+
 Authors
 -------
 
@@ -31,73 +43,6 @@ To Do
 * Add compatibility for non iOS devices (e.g. Android)
 * Add compatibility for non webkit browsers (e.g. Firefox?)
 * Add UI/Control classes such as button, toggle, slider and popover.
-
-MooTouch Core
-=============
-
-This file contains an extremely light global object "MT" that contains useful
-information for use in the MooTouch framework. It is mostly used to set up a
-cross-platform (mouse / touch) base for the framework.
-
-What it does
-------------
-
-* The necessary event codes are setup for Element.AddEvent to work.
-* Some event names are chosen based on the platform and put into
-	MT.startEvent, MT.moveEvent and MT.endEvent. Feel free to use
-	these in your code as well.
-* A MT.getEvent method is created for hiding the difference between
-  touches and clicks from the rest of MooTouch.
-
-MTSwipeEvent
-============
-
-Adds the 'swipe' event to Element.Events. This means you can do this:
-	
-	my_element.addEvent('swipe', fn);
-
-How to use
-----------
-	
-Add and remove the event as you would normally. The event will only fire under 
-these conditions: 
-	
-1. The user starts his touch inside of the element and moves horizontally in 
-	 either direction for 70 pixels (configurable).
-
-Arguments
----------
-
-The function you specify as a callback will be bound to the element and passed the 
-following things:
-
-1. An object containing the direction ('left' or 'right'), startX, endX, startY and endY
-2. The event. 
-
-Configuration
--------------
-
-You can configure the following properties by assigning a value to them in your script:
-
-	Element.Events.swipe.swipeWidth // default is 70
-	Element.Events.swipe.cancelVertical // default is true
-
-
-MTTapEvent
-==========
-
-Adds the 'tap' event to Element.Events. This means you can do this:
-	
-	my_element.addEvent('tap', fn);
-
-How to use
-----------
-	
-Add and remove the event as you would normally. The event will only fire under these conditions: 
-	
-1. The user starts his touch inside of the element and releases it inside of the element.
-2. During the touch start/end sequence, the page does not scroll.
-
 
 MooTouch Translate
 ==================

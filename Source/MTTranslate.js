@@ -16,6 +16,8 @@ provides: MTTranslate
 ...
 */
 
+Element.NativeEvents.webkitTransitionEnd = 2;
+
 Element.implement({
 
 	getTranslate3d: function(){
@@ -35,8 +37,7 @@ Element.implement({
 		var transform = this.getStyle('-webkit-transform'),
 			previousTransform = '' + (transform != 'none' ? transform : '').replace(/translate3d\([^)]+\)/, '');
 
-		this.setStyle('-webkit-transform', previousTransform + ' translate3d(' + x + 'px,' + y + 'px,' + z + 'px)');
-		return this;
+		return this.setStyle('-webkit-transform', previousTransform + ' translate3d(' + x + 'px,' + y + 'px,' + z + 'px)');
 	}
 
 });
