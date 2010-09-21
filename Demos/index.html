@@ -85,10 +85,9 @@
   </div>
   <script type="text/javascript" src="mootools-core.js"></script>
   <script type="text/javascript" src="mootools-class-extras.js"></script>
+  <script type="text/javascript" src="mootools-custom-event.js"></script>
+  <script type="text/javascript" src="mootools-mobile.js"></script>
 
-  <script type="text/javascript" src="../Source/MTCore.js"></script>
-  <script type="text/javascript" src="../Source/MTSwipeEvent.js"></script>
-  <script type="text/javascript" src="../Source/MTTapEvent.js"></script>
   <script type="text/javascript" src="../Source/MTPoint.js"></script>
   <script type="text/javascript" src="../Source/MTTranslate.js"></script>
   <script type="text/javascript" src="../Source/MTScrollView.js"></script>
@@ -108,7 +107,7 @@
 					swipe_left_total = 0,
 					swipe_right_total = 0;				
 
-			$('tap').addEvent('tap', function(){
+			$('tap').addEvent('touch', function(){
 				this.getElement('span').set('html', ++tap_total)
 						.addClassForDuration('pop', 200);
 			});
