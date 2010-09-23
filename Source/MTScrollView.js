@@ -103,14 +103,14 @@ this.MTScrollView = new Class({
 	// Event attaching and handling
 	attach: function(){
 		[this.element, this.content].invoke('addEvent', 'webkitTransitionEnd', this.bound('transitionEnded'))
-		this.element.addEventListener(events.start, this.bound('touchesBegan'), true);
+		this.element.addEventListener(events.start, this.bound('touchstart'), true);
 
 		return this;
 	},
 
 	detach: function(){
 		[this.element, this.content].invoke('removeEvent', 'webkitTransitionEnd', this.bound('transitionEnded'))
-		this.element.removeEventListener(events.start, this.bound('touchesBegan'), true);
+		this.element.removeEventListener(events.start, this.bound('touchstart'), true);
 
 		return this;
 	},
@@ -118,31 +118,31 @@ this.MTScrollView = new Class({
 	attachTrackingEvents: function(){
 		var element = this.options.eventElement;
 
-		element.addEventListener(events.move, this.bound('touchesMoved'), true);
-		element.addEventListener(events.end,	this.bound('touchesEnded'), true);
-		element.addEventListener('touchcancel', this.bound('touchesCancelled'), true);
+		element.addEventListener(events.move, this.bound('touchmove'), true);
+		element.addEventListener(events.end,	this.bound('touchend'), true);
+		element.addEventListener('touchcancel', this.bound('touchend'), true);
 	},
 
 	detachTrackingEvents: function(){
 		var element = this.options.eventElement;
 
-		element.removeEventListener(events.move, this.bound('touchesMoved'), true);
-		element.removeEventListener(events.end, this.bound('touchesEnded'), true);
-		element.removeEventListener('touchcancel', this.bound('touchesCancelled'), true);
+		element.removeEventListener(events.move, this.bound('touchmove'), true);
+		element.removeEventListener(events.end, this.bound('touchend'), true);
+		element.removeEventListener('touchcancel', this.bound('touchend'), true);
 	},
 
 	// Sizing
 	update: function(){
-		this.contentSize = this.content.getSize();
+		this.contentSize = this.content.getScrollSize();
 		this.elementSize = this.element.getSize();
 		this.windowHeight = window.getHeight();
-
+		
 		if (this.options.pagingEnabled && !this.customPageSize)
 			this.options.pageSize = this.element.getSize();
 
-		return this.contentSize = {
-			x: (this.contentSize.x - this.elementSize.x).limit(0, this.contentSize.x),
-			y: (this.contentSize.y - this.elementSize.y).limit(0, this.contentSize.y)
+		this.contentSize = {
+			x: (this.contentSize.x - this.elementSize.x).max(0),
+			y: (this.contentSize.y - this.elementSize.y).max(0)
 		};
 	},
 
@@ -152,7 +152,7 @@ this.MTScrollView = new Class({
 		this.fireEvent('scrollEnd', this);
 	},
 
-	touchesBegan: function(event){
+	touchstart: function(event){
 		this.touchesBeganFired = true;
 		if (!this.scrollEnabled) return;
 
@@ -163,7 +163,7 @@ this.MTScrollView = new Class({
 
 		this.addPointToHistory(event.timeStamp, this.currentScroll, true);
 
-		this.startScrollPosition = this.currentScroll.copy();
+		this.startScrollPosition = this.currentScroll.clone();
 		this.startTouchPosition = MTPoint.fromElement(this.element, getPosition(event));
 
 		this.isDragging = false;
@@ -171,9 +171,9 @@ this.MTScrollView = new Class({
 		this.attachTrackingEvents();
 	},
 
-	touchesMoved: function(event){
+	touchmove: function(event){
 		if (!this.touchesBeganFired){
-			this.touchesBegan(event);
+			this.touchstart(event);
 			return;
 		}
 
@@ -200,11 +200,11 @@ this.MTScrollView = new Class({
 			}
 
 			if (this.windowHeight - this.options.bottomCancelHeight < position.y){
-				this.touchesEnded(event, true);
+				this.touchend(event, true);
 				return;
 			}
 
-			var newPoint = this.startScrollPosition.copy(function(val, axis){
+			var newPoint = this.startScrollPosition.clone(function(val, axis){
 				return (this.options.axis.contains(axis)) ? val - deltaPoint[axis] : this.currentScroll[axis];
 			}.bind(this));
 
@@ -220,10 +220,10 @@ this.MTScrollView = new Class({
 			this.scrollToPoint(newPoint, false);
 		}
 
-		this.addPointToHistory(event.timeStamp, this.currentScroll.copy());
+		this.addPointToHistory(event.timeStamp, this.currentScroll.clone());
 	},
 
-	touchesEnded: function(event, dontDetach){
+	touchend: function(event, dontDetach){
 		if (dontDetach == null)
 			this.detachTrackingEvents();
 
@@ -232,11 +232,12 @@ this.MTScrollView = new Class({
 			event.stopPropagation();
 
 			if (this.oldestPoint){
-				this.currentScrollBeforeDeceleration = this.currentScroll.copy();
+				this.currentScrollBeforeDeceleration = this.currentScroll.clone();
 				this.startDecelerationAnimation();
-			} else
+			} else {
 				this.fireEvent('scrollEnd', this);
-
+			}
+			
 			this.fireEvent('dragEnd', this);
 		}
 
@@ -251,10 +252,6 @@ this.MTScrollView = new Class({
 		}).delay(1);
 	},
 
-	touchesCancelled: function(event){
-		this.touchesEnded(event);
-	},
-
 	// Scrolling & Animation
 	scrollToPoint: function(newPoint, animate){
 		if (this.currentScroll.equals(newPoint))
@@ -263,7 +260,7 @@ this.MTScrollView = new Class({
 		this.currentScroll = newPoint;
 
 		if (!this.isDragging && !this.isDecelerating){
-			this.currentScroll = this.currentScroll.copy(function(val, axis){
+			this.currentScroll = this.currentScroll.clone(function(val, axis){
 				return val.limit(0, this.contentSize[axis]);
 			}.bind(this));
 		}
@@ -280,8 +277,7 @@ this.MTScrollView = new Class({
 		if (this.options.pagingEnabled){
 			newPoint.x = (this.currentScroll.x / this.options.pageSize.x).round() * this.options.pageSize.x;
 			newPoint.y = (this.currentScroll.y / this.options.pageSize.y).round() * this.options.pageSize.y;
-		} else
-		if (this.options.bounces){
+		} else if (this.options.bounces){
 			newPoint.x = Math.max(Math.min(this.contentSize.x, this.currentScroll.x), 0);
 			newPoint.y = Math.max(Math.min(this.contentSize.y, this.currentScroll.y), 0);
 		}
@@ -345,7 +341,7 @@ this.MTScrollView = new Class({
 			this.decelerationFrame(true);
 		}
 
-		var newPoint = this.currentScroll.copy(function(val, axis){
+		var newPoint = this.currentScroll.clone(function(val, axis){
 			return val + this.decelerationVelocity[axis];
 		}.bind(this));
 
@@ -361,7 +357,7 @@ this.MTScrollView = new Class({
 		}
 
 		if (fast)
-			this.currentScroll = newPoint.copy();
+			this.currentScroll = newPoint.clone();
 		else
 			this.scrollToPoint(newPoint);
 
@@ -427,38 +423,38 @@ this.MTScrollView = new Class({
 
 		this.options.axis.each(function(axis){
 			var element = this.indicators[axis];
-			if (element && this.options['showScrollIndicator' + axis.toUpperCase()]){
-				var dim = this.elementSize[axis] * (this.elementSize[axis] / this.contentSize[axis]).limit(0,1);
-				var pos = (this.elementSize[axis] - dim) * (this.currentScroll[axis] / this.contentSize[axis]);
-				var scale = 1,
-						scaleDiff = 0;
+			if (!element || !this.options['showScrollIndicator' + axis.toUpperCase()])
+				return;
 
-				if (this.startingIndicatorSizes == null){
-					this.startingIndicatorSizes = {};
-					this.startingIndicatorSizes[axis] = dim;
-					element.setStyle(mapping[axis][0], dim);
-				}
+			var dim = this.elementSize[axis] * (this.elementSize[axis] / this.contentSize[axis]).limit(0,1);
+			var pos = (this.elementSize[axis] - dim) * (this.currentScroll[axis] / this.contentSize[axis]);
+			var scale = 1,
+					scaleDiff = 0;
 
-				if (this.currentScroll[axis] < 0){
-					dim += this.currentScroll[axis];
-					pos = 0; // todo inset margin option? or just css?
-					scale = (dim / this.startingIndicatorSizes[axis]).limit(0,1);
-					scaleDiff =	-(this.startingIndicatorSizes[axis] - dim)/2;
-				} else if (this.currentScroll[axis] > this.contentSize[axis]){
-					dim += this.contentSize[axis] - this.currentScroll[axis];
-					pos = this.elementSize[axis] - dim - 10; // todo option or use a style get
-					scale = (dim / this.startingIndicatorSizes[axis]).limit(0,1);
-					scaleDiff = (this.startingIndicatorSizes[axis] - dim)/2;
-				}
-
-				element.setStyle('-webkit-transition-duration', animate ? this.options.pagingTransitionDuration : 0);
-
-				var position = pos + scaleDiff + 'px';
-				if (axis == 'x') position += ', 0';
-				else position = '0, ' + position;
-				
-				element.setStyle('-webkit-transform', 'translate3d(' + position + ', 0) scale' + axis.toUpperCase() + '(' + scale + ')');
+			if (this.startingIndicatorSizes == null){
+				this.startingIndicatorSizes = {};
+				this.startingIndicatorSizes[axis] = dim;
+				element.setStyle(mapping[axis][0], dim);
 			}
+
+			if (this.currentScroll[axis] < 0){
+				dim += this.currentScroll[axis];
+				pos = 0; // todo inset margin option? or just css?
+				scale = (dim / this.startingIndicatorSizes[axis]).limit(0,1);
+				scaleDiff =	-(this.startingIndicatorSizes[axis] - dim)/2;
+			} else if (this.currentScroll[axis] > this.contentSize[axis]){
+				dim += this.contentSize[axis] - this.currentScroll[axis];
+				pos = this.elementSize[axis] - dim - 10; // todo option or use a style get
+				scale = (dim / this.startingIndicatorSizes[axis]).limit(0,1);
+				scaleDiff = (this.startingIndicatorSizes[axis] - dim)/2;
+			}
+
+			var position = pos + scaleDiff + 'px';
+			if (axis == 'x') position += ', 0';
+			else position = '0, ' + position;
+
+			element.setStyle('-webkit-transition-duration', animate ? this.options.pagingTransitionDuration : 0);
+			element.setStyle('-webkit-transform', 'translate3d(' + position + ', 0) scale' + axis.toUpperCase() + '(' + scale + ')');
 		}, this);
 	},
 
@@ -505,13 +501,13 @@ this.MTScrollView = new Class({
 	},
 
 	setDecelerationVelocity: function(){
-		this.decelerationVelocity = this.finalDistance().copy(function(val){
+		this.decelerationVelocity = this.finalDistance().clone(function(val){
 			return val / this.finalDuration();
 		}.bind(this));
 	},
 
 	// Enabling & Disabling
-	cancelScroll: function(){
+	cancel: function(){
 		if (this.isDragging){
 			this.isDragging = false;
 			this.snapToBounds();
@@ -522,12 +518,12 @@ this.MTScrollView = new Class({
 		this.detachTrackingEvents();
 	},
 
-	disableScroll: function(){
-		this.cancelScroll();
+	disable: function(){
+		this.cancel();
 		this.scrollEnabled = false;
 	},
 
-	enableScroll: function(){
+	enable: function(){
 		this.scrollEnabled = true;
 	}
 

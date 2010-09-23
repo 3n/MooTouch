@@ -46,7 +46,7 @@ MTPoint.prototype = {
 		);
 	},
 
-	copy: function(fn){
+	clone: function(fn){
 		if (fn) return new MTPoint(fn.call(this, this.x, 'x'), fn.call(this, this.y, 'y'), fn.call(this, this.z, 'z'));
 		return new MTPoint(this.x, this.y, this.z);
 	}
