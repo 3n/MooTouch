@@ -18,6 +18,8 @@ provides: MTScrollView
 
 (function(){
 
+Element.NativeEvents.webkitTransitionEnd = 2;
+
 var events = Browser.Features.Touch ? {
 	start: 'touchstart',
 	move: 'touchmove',
@@ -266,8 +268,7 @@ this.MTScrollView = new Class({
 			}.bind(this));
 		}
 
-		this.content.setTranslate3d(-this.currentScroll.x, -this.currentScroll.y);
-
+		this.content.setStyle('-webkit-transform', 'translate3d(' + -this.currentScroll.x + 'px, ' + -this.currentScroll.y + 'px, 0)');
 		if (animate) this.content.setStyle('-webkit-transition-duration', this.options.pagingTransitionDuration);
 		
 		this.updateIndicators(animate);
@@ -450,19 +451,13 @@ this.MTScrollView = new Class({
 					scaleDiff = (this.startingIndicatorSizes[axis] - dim)/2;
 				}
 
-				if (animate)
-					element.setStyle('-webkit-transition-duration', this.options.pagingTransitionDuration);
-				else
-					element.setStyle('-webkit-transition-duration', 0);
+				element.setStyle('-webkit-transition-duration', animate ? this.options.pagingTransitionDuration : 0);
 
-				if (this.options.indicatorHeightEffect)
-					element.setStyle('webkitTransform', 'scale' + axis.toUpperCase() + '(' + scale + ')');
-
-				var args = [pos + (this.options.indicatorHeightEffect ? scaleDiff : 0)];
-				if (axis == 'y') args.unshift(0);
-				if (axis == 'z') args.unshift(0, 0); // Yikes !
-
-				element.setTranslate3d.apply(element, args);
+				var position = pos + scaleDiff + 'px';
+				if (axis == 'x') position += ', 0';
+				else position = '0, ' + position;
+				
+				element.setStyle('-webkit-transform', 'translate3d(' + position + ', 0) scale' + axis.toUpperCase() + '(' + scale + ')');
 			}
 		}, this);
 	},

@@ -15,5 +15,4 @@ authors: "[Ian Collins](http://www.iancollins.me) [Christoph Pojer](http://cpoje
 
 sources:
     - "Source/MTPoint.js"
-    - "Source/MTTranslate.js"
     - "Source/MTScrollView.js"

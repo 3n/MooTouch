@@ -10,9 +10,7 @@ device-specific events and useful UI components/views for use in an application
 you design yourself. It is meant to be used by people who know how to write code
 and build their own apps._
 
-Currently provides a few helper events for common gestures, some Element
-extensions for getting and setting the translate3d property and a 
-native iOS scrolling emulation class.
+Currently provides a native iOS scrolling emulation class.
 
 All code works on old-school "desktop" browsers as well, as "mouse" events
 are handled the same as touch events.
@@ -43,36 +41,6 @@ To Do
 * Add compatibility for non iOS devices (e.g. Android)
 * Add compatibility for non webkit browsers (e.g. Firefox?)
 * Add UI/Control classes such as button, toggle, slider and popover.
-
-MooTouch Translate
-==================
-
-Some element extensions for setting and getting the css translate3d property.
-
-getTranslate3d
---------------
-
-Returns the element's current translate3d value, or null if there isn't one.
-An object is returned containing x, y, z as keys, and numbers as values.
-
-setTranslate3d
---------------
-
-Set's the element's translate3d property. Uses the current value for any
-axis that isn't specified in the arguments. Does not clobber any other
-transforms that may be applied to the element - only replaces or appends
-the translate3d part.
-
-Arguments: x,y,z (ints or floats)
-
-Convenience methods
--------------------
-
-setTranslate(x,y), setTranslateX(x), setTranslateY(y), setTranslateZ(z).
-All of these take a final argument of (boolean)useZero that will use 0
-for the other axis, instead of leaving null (which will maintain current
-value).
-
 
 MooTouch ScrollView
 ===================
