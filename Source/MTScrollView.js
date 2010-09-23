@@ -44,7 +44,7 @@ this.MTScrollView = new Class({
 		pagingEnabled: false,
 		bounces: true,
 
-		eventElement: window,
+		eventElement: document,
 
 		indicatorClass: 'indicator',
 		indicatorShowingClass: 'showing',
@@ -70,30 +70,28 @@ this.MTScrollView = new Class({
 	scrollEnabled: true,
 	touchesBeganFired: false,
 
-	initialize: function(scrollArea, options){
+	initialize: function(element, options){
 		this.setOptions(options);
 		if (this.options.pageSize != null)
 			this.customPageSize = true;
 
-		this.scrollArea = document.id(scrollArea);
+		this.element = element = document.id(element);
 		this.currentScroll = new MTPoint();
 
-		this.hostingLayer = new Element('div').inject(this.scrollArea, 'top');
-		this.hostingLayer.adopt(this.hostingLayer.getAllNext());
-
+		this.content = new Element('div').adopt(element.getChildren()).inject(element);
+		
 		this.indicators = {};
 		this.options.axis.each(function(axis){
 			this.indicators[axis] = new Element('div', {
 				'class': this.options.indicatorClass + ' ' + axis + '-axis-' + this.options.indicatorClass
-			}).inject(this.hostingLayer,'after');
+			}).inject(this.content, 'after');
 		}, this);
 
-		this.attach();
-		this.refreshSizes();
+		this.attach().update();
 
 		// gets the view ready to be translate, fixes initial stickyness.
-		this.scrollToPoint(new MTPoint(0, 1, 0));
-		this.scrollToPoint(new MTPoint(0, 0, 0));
+		this.scrollToPoint(new MTPoint(0, 1));
+		this.scrollToPoint(new MTPoint());
 		
 		this.addEvent('onWillBeginDragging', Element.disableCustomEvents);
 
@@ -102,62 +100,75 @@ this.MTScrollView = new Class({
 
 	// Event attaching and handling
 	attach: function(){
-		$$(this.scrollArea, this.hostingLayer).addEvent('webkitTransitionEnd', this.bound('transitionEnded'));
-		this.scrollArea.addEventListener(events.start, this.bound('touchesBegan'), true);
-	},
-	detach: function(){
-		this.detachTrackingEvents();
-		$$(this.scrollArea, this.hostingLayer).removeEvent('webkitTransitionEnd', this.bound('transitionEnded'));
-		this.scrollArea.removeEventListener(events.start, this.bound('touchesBegan'), true);
-	},
-	attachTrackingEvents: function(){
-		this.options.eventElement.addEventListener(events.move, this.bound('touchesMoved'), true);
-		this.options.eventElement.addEventListener(events.end,	this.bound('touchesEnded'), true);
-		this.options.eventElement.addEventListener('touchcancel', this.bound('touchesCancelled'), true);
-	},
-	detachTrackingEvents: function(){
-		this.options.eventElement.removeEventListener(events.move, this.bound('touchesMoved'), true);
-		this.options.eventElement.removeEventListener(events.end, this.bound('touchesEnded'), true);
-		this.options.eventElement.removeEventListener('touchcancel', this.bound('touchesCancelled'), true);
+		[this.element, this.content].invoke('addEvent', 'webkitTransitionEnd', this.bound('transitionEnded'))
+		this.element.addEventListener(events.start, this.bound('touchesBegan'), true);
+
+		return this;
 	},
 
+	detach: function(){
+		[this.element, this.content].invoke('removeEvent', 'webkitTransitionEnd', this.bound('transitionEnded'))
+		this.element.removeEventListener(events.start, this.bound('touchesBegan'), true);
+
+		return this;
+	},
+
+	attachTrackingEvents: function(){
+		var element = this.options.eventElement;
+
+		element.addEventListener(events.move, this.bound('touchesMoved'), true);
+		element.addEventListener(events.end,	this.bound('touchesEnded'), true);
+		element.addEventListener('touchcancel', this.bound('touchesCancelled'), true);
+	},
+
+	detachTrackingEvents: function(){
+		var element = this.options.eventElement;
+
+		element.removeEventListener(events.move, this.bound('touchesMoved'), true);
+		element.removeEventListener(events.end, this.bound('touchesEnded'), true);
+		element.removeEventListener('touchcancel', this.bound('touchesCancelled'), true);
+	},
 
 	// Sizing
-	refreshSizes: function(){
-		this.hostingLayerSize = this.hostingLayer.getSize();
-		this.scrollAreaSize = this.scrollArea.getSize();
+	update: function(){
+		this.contentSize = this.content.getSize();
+		this.elementSize = this.element.getSize();
 		this.windowHeight = window.getHeight();
 
 		if (this.options.pagingEnabled && !this.customPageSize)
-			this.options.pageSize = this.scrollArea.getSize();
+			this.options.pageSize = this.element.getSize();
 
-		return this.contentSize = { 'x': (this.hostingLayerSize.x - this.scrollAreaSize.x).limit(0,this.hostingLayerSize.x),
-																'y': (this.hostingLayerSize.y - this.scrollAreaSize.y).limit(0,this.hostingLayerSize.y) };
+		return this.contentSize = {
+			x: (this.contentSize.x - this.elementSize.x).limit(0, this.contentSize.x),
+			y: (this.contentSize.y - this.elementSize.y).limit(0, this.contentSize.y)
+		};
 	},
 
 	// Event Callbacks
 	transitionEnded: function(e){
-		this.hostingLayer.setStyle('-webkit-transition-duration', 0);
+		this.content.setStyle('-webkit-transition-duration', 0);
 		this.fireEvent('scrollEnd', this);
 	},
+
 	touchesBegan: function(event){
 		this.touchesBeganFired = true;
 		if (!this.scrollEnabled) return;
 
 		event.preventDefault();
 		this.stopDecelerationAnimation();
-		this.hostingLayer.setStyle('-webkit-transition-duration', 0);
+		this.content.setStyle('-webkit-transition-duration', 0);
 		this.snapToBounds(false);
 
 		this.addPointToHistory(event.timeStamp, this.currentScroll, true);
 
 		this.startScrollPosition = this.currentScroll.copy();
-		this.startTouchPosition = MTPoint.fromElement(this.scrollArea, getPosition(event));
+		this.startTouchPosition = MTPoint.fromElement(this.element, getPosition(event));
 
 		this.isDragging = false;
 
 		this.attachTrackingEvents();
 	},
+
 	touchesMoved: function(event){
 		if (!this.touchesBeganFired){
 			this.touchesBegan(event);
@@ -167,11 +178,13 @@ this.MTScrollView = new Class({
 		event.preventDefault();
 
 		var position = getPosition(event);
-		var touch_position = MTPoint.fromElement(this.scrollArea, position);
+		var touch_position = MTPoint.fromElement(this.element, position);
 		var deltaPoint = touch_position.subtract(this.startTouchPosition);
 
 		if (!this.isDragging){
-			if (this.options.axis.some(function(axis){ return Math.abs(deltaPoint[axis]) >= this.options.minimumTrackingForDrag; }.bind(this))){
+			if (this.options.axis.some(function(axis){
+				return Math.abs(deltaPoint[axis]) >= this.options.minimumTrackingForDrag;
+			}.bind(this))){
 				this.fireEvent('willBeginDragging', this);
 				this.isDragging = true;
 				this.firstDrag = true;
@@ -207,6 +220,7 @@ this.MTScrollView = new Class({
 
 		this.addPointToHistory(event.timeStamp, this.currentScroll.copy());
 	},
+
 	touchesEnded: function(event, dontDetach){
 		if (dontDetach == null)
 			this.detachTrackingEvents();
@@ -234,10 +248,10 @@ this.MTScrollView = new Class({
 			Element.enableCustomEvents();
 		}).delay(1);
 	},
+
 	touchesCancelled: function(event){
 		this.touchesEnded(event);
 	},
-
 
 	// Scrolling & Animation
 	scrollToPoint: function(newPoint, animate){
@@ -252,15 +266,13 @@ this.MTScrollView = new Class({
 			}.bind(this));
 		}
 
-		this.hostingLayer.setTranslate3d(-this.currentScroll.x, -this.currentScroll.y);
+		this.content.setTranslate3d(-this.currentScroll.x, -this.currentScroll.y);
 
-		if (animate)
-			this.hostingLayer.setStyle('-webkit-transition-duration', this.options.pagingTransitionDuration);
-		else
-			this.fireEvent('scroll', this);
-
+		if (animate) this.content.setStyle('-webkit-transition-duration', this.options.pagingTransitionDuration);
+		
 		this.updateIndicators(animate);
 	},
+
 	snapToBounds: function(animate){
 		var newPoint = new MTPoint();
 
@@ -276,6 +288,7 @@ this.MTScrollView = new Class({
 		if (!newPoint.equals(this.currentScroll))
 			this.scrollToPoint(newPoint, animate);
 	},
+
 	startDecelerationAnimation: function(){
 		if (this.options.bounces && (this.currentScroll.x > this.contentSize.x || this.currentScroll.y > this.contentSize.y ||
 				this.currentScroll.x < 0 || this.currentScroll.y < 0)){
@@ -309,14 +322,16 @@ this.MTScrollView = new Class({
 			this.fireEvent('willBeginDecelerating');
 		}
 	},
+
 	stopDecelerationAnimation: function(){
 		if (this.isDecelerating){
-			this.fireEvent('didEndDecelerating', this);
-			this.fireEvent('scrollEnd', this);
+			this.fireEvent('didEndDecelerating', this).fireEvent('scrollEnd', this);
 		}
+
 		this.isDecelerating = false;
 		clearTimeout(this.decelerationTimer);
 	},
+
 	decelerationFrame: function(fast){
 		if (!this.isDecelerating)
 			return;
@@ -390,6 +405,7 @@ this.MTScrollView = new Class({
 			this.lastFrame = now;
 		}
 	},
+
 	decelerationAnimationCompleted: function(){
 		this.stopDecelerationAnimation();
 
@@ -411,8 +427,8 @@ this.MTScrollView = new Class({
 		this.options.axis.each(function(axis){
 			var element = this.indicators[axis];
 			if (element && this.options['showScrollIndicator' + axis.toUpperCase()]){
-				var dim = this.scrollAreaSize[axis] * (this.scrollAreaSize[axis] / this.hostingLayerSize[axis]).limit(0,1);
-				var pos = (this.scrollAreaSize[axis] - dim) * (this.currentScroll[axis] / this.contentSize[axis]);
+				var dim = this.elementSize[axis] * (this.elementSize[axis] / this.contentSize[axis]).limit(0,1);
+				var pos = (this.elementSize[axis] - dim) * (this.currentScroll[axis] / this.contentSize[axis]);
 				var scale = 1,
 						scaleDiff = 0;
 
@@ -429,7 +445,7 @@ this.MTScrollView = new Class({
 					scaleDiff =	-(this.startingIndicatorSizes[axis] - dim)/2;
 				} else if (this.currentScroll[axis] > this.contentSize[axis]){
 					dim += this.contentSize[axis] - this.currentScroll[axis];
-					pos = this.scrollAreaSize[axis] - dim - 10; // todo option or use a style get
+					pos = this.elementSize[axis] - dim - 10; // todo option or use a style get
 					scale = (dim / this.startingIndicatorSizes[axis]).limit(0,1);
 					scaleDiff = (this.startingIndicatorSizes[axis] - dim)/2;
 				}
@@ -450,12 +466,14 @@ this.MTScrollView = new Class({
 			}
 		}, this);
 	},
+
 	showIndicators: function(){
 		this.updateIndicators();
 		this.options.axis.each(function(axis){
 			this.indicators[axis].addClass(this.options.indicatorShowingClass);
 		}, this);
 	},
+
 	hideIndicators: function(){
 		this.options.axis.each(function(axis){
 			this.indicators[axis].removeClass(this.options.indicatorShowingClass);
@@ -466,9 +484,9 @@ this.MTScrollView = new Class({
 	scrollToTop: function(){
 		return this.scrollToPoint(new MTPoint(), true);
 	},
-	scrollTo: function(x,y,animate){
-		animate = (animate != null) ? animate : true;
-		return this.scrollToPoint(new MTPoint(x, y), animate);
+
+	scrollTo: function(x, y, animate){
+		return this.scrollToPoint(new MTPoint(x, y), (animate != null) ? animate : true);
 	},
 
 
@@ -482,18 +500,20 @@ this.MTScrollView = new Class({
 			this.oldestTime = time;
 		}).delay(fast ? 0 : this.options.maxAgeForPointHistory, this);
 	},
+
 	finalDuration: function(){
 		return (this.oldestTime - this.latestTime) / this.options.scrollAcceleration;
 	},
+
 	finalDistance: function(){
 		return this.oldestPoint.subtract(this.latestPoint);
 	},
+
 	setDecelerationVelocity: function(){
 		this.decelerationVelocity = this.finalDistance().copy(function(val){
 			return val / this.finalDuration();
 		}.bind(this));
 	},
-
 
 	// Enabling & Disabling
 	cancelScroll: function(){
@@ -506,10 +526,12 @@ this.MTScrollView = new Class({
 		this.hideIndicators();
 		this.detachTrackingEvents();
 	},
+
 	disableScroll: function(){
 		this.cancelScroll();
 		this.scrollEnabled = false;
 	},
+
 	enableScroll: function(){
 		this.scrollEnabled = true;
 	}

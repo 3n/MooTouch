@@ -106,7 +106,7 @@ How to use
 	
 That element will now be the wrapper/container for all of the scrolling 
 content. It is advised that you give it a static size. If it is ever
-resized, call scrollView.refreshSizes().
+resized, call scrollView.update().
 
 You should also have some CSS to go along with the scroll view. Here is the
 most basic:
