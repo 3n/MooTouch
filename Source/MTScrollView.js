@@ -429,7 +429,7 @@ this.MTScrollView = new Class({
 			var dim = this.elementSize[axis] * (this.elementSize[axis] / this.contentSize[axis]).limit(0,1);
 			var pos = (this.elementSize[axis] - dim) * (this.currentScroll[axis] / this.contentSize[axis]);
 			var scale = 1,
-					scaleDiff = 0;
+				scaleDiff = 0;
 
 			if (this.startingIndicatorSizes == null){
 				this.startingIndicatorSizes = {};
@@ -461,6 +461,7 @@ this.MTScrollView = new Class({
 	showIndicators: function(){
 		this.updateIndicators();
 		this.options.axis.each(function(axis){
+			if (this.contentSize[axis] < this.elementSize[axis]) return;
 			this.indicators[axis].addClass(this.options.indicatorShowingClass);
 		}, this);
 	},
