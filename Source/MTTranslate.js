@@ -2,12 +2,9 @@
 --- 
 authors: 
 - 3n
-provides: 
-- MTTranslate
+provides: [MTTranslate]
 requires: 
-  core/1.2.3: 
-  - Element.Style
-  self/: 
+  - Core/Element.Style
   - MTPoint
 license: MIT-style
 description: Element extensions for getting and setting the translate3d css property.

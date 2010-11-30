@@ -2,19 +2,15 @@
 --- 
 authors: 
 - 3n
-provides: 
-- MTScrollView
+provides: [MTScrollView]
 requires: 
-  more/1.2.3.1: 
-  - Class.Binds
-  self/: 
+  - More/Class.Binds
   - MTPoint
   - MTTranslate
-  core/1.2.3: 
-  - Class.Extras
-  - Element.Event
-  - Element.Dimensions
-  - Number
+  - Core/Class.Extras
+  - Core/Element.Event
+  - Core/Element.Dimensions
+  - Core/Number
 license: MIT-style
 description: A recreation of the native iOS scrolling.
 ...

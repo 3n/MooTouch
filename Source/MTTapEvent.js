@@ -2,14 +2,11 @@
 --- 
 authors: 
 - 3n
-provides: 
-- MTTapEvent
+provides: [MTTapEvent]
 requires: 
-  self/: 
   - MTCore
-  core/1.2.3: 
-  - Element.Event
-  - Element.Dimensions
+  - Core/Element.Event
+  - Core/Element.Dimensions
 license: MIT-style
 description: Adds element.addEvent('tap', fn).
 ...

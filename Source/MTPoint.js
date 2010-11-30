@@ -2,10 +2,8 @@
 --- 
 authors: 
 - 3n
-provides: 
-- MTPoint
+provides: [MTPoint]
 requires: 
-  self/: 
   - MTCore
 license: MIT-style
 description: A simple 3d point class with some helper methods.

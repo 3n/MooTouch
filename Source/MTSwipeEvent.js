@@ -2,13 +2,10 @@
 --- 
 authors: 
 - 3n
-provides: 
-- MTSwipeEvent
+provides: [MTSwipeEvent]
 requires: 
-  self/: 
   - MTCore
-  core/1.2.3: 
-  - Element.Event
+  - Core/Element.Event
 license: MIT-style
 description: Adds element.addEvent('swipe', fn). fn is passed information about the swipe location and direction.
 ...

@@ -2,12 +2,10 @@
 --- 
 authors: 
 - 3n
-provides: 
-- MTCore
+provides: [MTCore]
 requires: 
-  core/1.2.3: 
-  - Core
-  - Element.Event
+  - Core/Core
+  - Core/Element.Event
 license: MIT-style
 description: The core of MooTouch.
 ...

@@ -3,17 +3,24 @@ author: 3n
 website: http://www.iancollins.me
 contact: ian.collins@gmail.com
 scripts: 
-- MTCore
-- MTSwipeEvent
-- MTTapEvent
-- MTPoint
-- MTTranslate
-- MTScrollView
+  - MTCore
+  - MTSwipeEvent
+  - MTTapEvent
+  - MTPoint
+  - MTTranslate
+  - MTScrollView
 tags: 
-- mobile
-- ios
-- iphone
-- ipad
+  - mobile
+  - ios
+  - iphone
+  - ipad
 current: 0.1
 demo: http://iancollins.me/MooTouch-Demo/
 name: MooTouch
+sources: 
+  - Source/MTCore.js
+  - Source/MTSwipeEvent.js
+  - Source/MTTapEvent.js
+  - Source/MTPoint.js
+  - Source/MTTranslate.js
+  - Source/MTScrollView.js
