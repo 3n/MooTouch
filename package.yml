@@ -9,6 +9,7 @@ scripts:
   - MTPoint
   - MTTranslate
   - MTScrollView
+  - MTReplaceClicks
 tags: 
   - mobile
   - ios
@@ -24,3 +25,4 @@ sources:
   - Source/MTPoint.js
   - Source/MTTranslate.js
   - Source/MTScrollView.js
+  - Source/MTReplaceClicks.js  
