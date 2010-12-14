@@ -442,6 +442,17 @@ var MTScrollView = new Class({
     return this.scrollToPoint(new MTPoint(x,y), animate);
   },
   
+  // Random Helpers
+  currentPage: function(){
+    var tmp = {};
+    
+    this.options.axis.each(function(axis){
+      tmp[axis] = (this.currentScroll[axis] / this.options.pageSize[axis]).round(); 
+    }, this);
+    
+    return tmp;
+  },
+  
   
   // Speed Tracking
   addPointToHistory: function(time, point, fast){
